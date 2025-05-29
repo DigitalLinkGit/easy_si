@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% set selectedSource = app.request.get('source', 'odata') %}
+
+{% block title %}Gérer les données
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-4">
+		<h1>Gérer les données externes</h1>
+
+		{# Formulaire principal pour la source sélectionnée #}
+		{% if form is defined %}
+			<div class="mb-4">
+				{{ form_start(form) }}
+
+				<div class="row g-2">
+					<div class="col-md-4">
+						{{ form_row(form.source) }}
+					</div>
+				</div>
+
+				<div class="row g-2">
+					<div class="col">
+						<div class="position-relative">
+							<div class="form-floating">
+								{{ form_widget(form.url, {
+              attr: {
+                class: 'form-control form-control-sm',
+                placeholder: 'URL'
+              }
+            }) }}
+								<label for="{{ form.url.vars.id }}">URL</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row g-2">
+					<div class="col-md-4">
+						<div class="form-group w-100">
+							{{ form_label(form.username) }}
+							{{ form_widget(form.username, { attr: { class: 'form-control' } }) }}
+						</div>
+					</div>
+					<div class="col-md-4">
+						<div class="form-group w-100">
+							{{ form_label(form.password) }}
+							{{ form_widget(form.password, { attr: { class: 'form-control' } }) }}
+						</div>
+					</div>
+					<div class="col-md-4 d-flex align-items-end">
+						<button type="submit" class="btn btn-primary ms-auto">Exécuter</button>
+					</div>
+				</div>
+
+
+				{{ form_end(form, { render_rest: false }) }}
+			</div>
+		{% endif %}
+
+
+		{# Affichage des erreurs éventuelles #}
+		{% if error is defined and error %}
+			<div class="alert alert-danger">{{ error }}</div>
+		{% endif %}
+
+		{# Affichage des données (JSON brut + tableau) #}
+		{% if data %}
+			<ul class="nav nav-tabs mt-4" id="dataTabs" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="response-tab" data-bs-toggle="tab" data-bs-target="#response" type="button" role="tab">
+						Réponse
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="table-tab" data-bs-toggle="tab" data-bs-target="#table" type="button" role="tab">
+						Tableau
+					</button>
+				</li>
+			</ul>
+
+			<div class="tab-content" id="dataTabsContent">
+				<div class="tab-pane fade show active p-3" id="response" role="tabpanel" aria-labelledby="response-tab">
+					<div class="scrollable-response">
+						<pre><code class="language-json">
+{{ data is iterable ? data|json_encode(constant('JSON_PRETTY_PRINT')) : data }}
+          </code></pre>
+					</div>
+				</div>
+
+				<div class="tab-pane fade p-3" id="table" role="tabpanel" aria-labelledby="table-tab">
+					{% include 'manage_data/forms/_table_form.html.twig' %}
+				</div>
+			</div>
+		{% endif %}
+	</div>
+{% endblock %}

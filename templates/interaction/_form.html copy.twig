@@ -1,0 +1,155 @@
+{{ form_start(form) }}
+{% if interaction is not defined %}
+	<div class="alert alert-danger">Variable "interaction" manquante !</div>
+{% endif %}
+{# Vision métier #}
+<div class="border rounded p-3 mb-4">
+	<h5 class="mb-3">Vision métier</h5>
+	<div class="row mb-3">
+		<div class="col-md-6">
+			{{ form_row(form.label) }}
+		</div>
+		<div class="col-md-6">
+			{{ form_row(form.dataName) }}
+		</div>
+	</div>
+	<div class="row mb-3">
+		<div class="col-md-6">
+			{{ form_row(form.elementIn, {
+				attr: { 'data-service-target': 'serviceIn' }
+			}) }}
+		</div>
+		<div class="col-md-6">
+			{{ form_row(form.elementOut, {
+				attr: { 'data-service-target': 'serviceOut' }
+			}) }}
+		</div>
+	</div>
+	<div class="mb-3">
+		{{ form_row(form.description) }}
+	</div>
+</div>
+
+{# Vision technique #}
+<div class="border rounded p-3 mb-4">
+	<h5 class="mb-3">Vision technique</h5>
+	<div
+		class="d-flex gap-4">
+
+		{# --- SERVICE ENTRANT --- #}
+		<div class="mb-3">
+			<label class="form-label">Service entrant</label>
+			<div class="d-flex gap-2 align-items-start">
+				<div class="flex-grow-1">
+					{{ form_row(form.serviceIn) }}
+				</div>
+				<button type="button" class="btn btn-outline-primary btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#addServiceInModal" {% if interaction.id is null %} disabled {% endif %}>
+					<i class="bi bi-plus-circle"></i>
+					Nouveau
+				</button>
+			</div>
+		</div>
+
+		{% if serviceInForm is defined %}
+			<div class="modal fade" id="addServiceInModal" tabindex="-1" aria-labelledby="addServiceInModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="addServiceInModalLabel">Nouveau service entrant</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+						</div>
+						<div class="modal-body">
+							{% if serviceInForm is defined and interaction.id and interaction.elementIn %}
+								{{ form_start(serviceInForm, {
+								action: path('app_interaction_add_service', {
+									id: interaction.id,
+									element: interaction.elementIn.id
+								})
+							}) }}
+								{{ form_widget(serviceInForm) }}
+								<div class="text-end mt-3">
+									<button type="submit" class="btn btn-primary">Créer</button>
+								</div>
+								{{ form_end(serviceInForm) }}
+							{% endif %}
+						</div>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
+		{# --- SERVICE SORTANT --- #}
+		<div class="mb-3">
+			<label class="form-label">Service sortant</label>
+			<div class="d-flex gap-2 align-items-start">
+				<div class="flex-grow-1">
+					{{ form_row(form.serviceOut) }}
+				</div>
+				<button type="button" class="btn btn-outline-primary btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#addServiceOutModal" {% if interaction.id is null %} disabled {% endif %}>
+					<i class="bi bi-plus-circle"></i>
+					Nouveau
+				</button>
+			</div>
+		</div>
+
+		{% if serviceOutForm is defined %}
+			<div class="modal fade" id="addServiceOutModal" tabindex="-1" aria-labelledby="addServiceOutModalLabel" aria-hidden="true">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="addServiceOutModalLabel">Nouveau service sortant</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+						</div>
+						<div class="modal-body">
+								{{ form_start(serviceOutForm, {
+								action: path('app_interaction_add_service', {
+									id: interaction.id,
+									element: interaction.elementOut.id
+								})
+							}) }}
+								{{ form_widget(serviceOutForm) }}
+								<div class="text-end mt-3">
+									<button type="submit" class="btn btn-primary">Créer</button>
+								</div>
+								{{ form_end(serviceOutForm) }}
+							</div>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+
+		</div>
+
+		<div class="mb-3">
+			{{ form_row(form.logic) }}
+		</div>
+	</div>
+
+	{{ include('components/button/_btn_save.html.twig') }}
+	{{ form_end(form, { render_rest: false }) }}
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+document.querySelectorAll('select[data-service-target]').forEach(function (selectElement) {
+selectElement.addEventListener('change', function () {
+const elementId = this.value;
+const target = this.dataset.serviceTarget;
+const serviceSelect = document.querySelector(`select[name$="[${target}]"]`);
+
+if (! elementId || ! serviceSelect)
+return;
+
+
+fetch('/services-by-element/' + elementId).then(response => response.json()).then(services => {
+serviceSelect.innerHTML = '<option value="">-- Choisir un service --</option>';
+services.forEach(service => {
+const option = document.createElement('option');
+option.value = service.id;
+option.textContent = service.label;
+serviceSelect.appendChild(option);
+});
+});
+});
+});
+});
+	</script>

@@ -1,0 +1,16 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Question
+{% endblock %}
+
+{% block body %}
+	<div class="container my-4">
+		{% include 'partials/_page_header.html.twig' with {
+        route_return: 'app_question_index',
+        title: 'Question'
+        } %}
+
+		{% include 'question/_form.html.twig' with { form: form} %}
+
+	</div>
+{% endblock %}

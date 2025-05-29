@@ -1,0 +1,50 @@
+
+    <button type="button"
+          class="btn btn-outline-primary btn-sm mt-2"
+          data-bs-toggle="modal"
+          data-bs-target="#newInteractionModal">
+    + Ajouter une interaction
+  </button>
+
+<div class="modal fade" id="newInteractionModal" tabindex="-1" aria-labelledby="newInteractionModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg modal-dialog-scrollable">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="newInteractionModalLabel">Nouvelle interaction</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+			</div>
+			<div class="modal-body">
+				{{ form_start(interactionForm, {
+					action: path('app_flow_add_interaction', { id: flow.id }),
+					method: 'POST',
+					attr: { id: 'interaction-mini-form' }
+				}) }}
+
+				<div class="row mb-3">
+					<div class="col-md-3">
+						{{ form_row(interactionForm.elementIn, { attr: { required: true } }) }}
+					</div>
+					<div class="col-md-3">
+						{{ form_row(interactionForm.label, { attr: { required: true } }) }}
+					</div>
+					<div class="col-md-3">
+						{{ form_row(interactionForm.dataName, { attr: { required: true } }) }}
+					</div>
+					<div class="col-md-3">
+						{{ form_row(interactionForm.elementOut, { attr: { required: true } }) }}
+					</div>
+				</div>
+
+				<div class="mb-3">
+					{{ form_row(interactionForm.description, { attr: { required: true } }) }}
+				</div>
+
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary">Ajouter au flow</button>
+				</div>
+
+				{{ form_end(interactionForm) }}
+			</div>
+		</div>
+	</div>
+</div>

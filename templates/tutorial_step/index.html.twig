@@ -1,0 +1,38 @@
+<h1>TutorialStep index</h1>
+
+<table class="table">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Number</th>
+			<th>Content</th>
+			<th>DomElement</th>
+			<th>actions</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for tutorial_step in tutorial.steps %}
+			<tr>
+				<td>{{ tutorial_step.id }}</td>
+				<td>{{ tutorial_step.number }}</td>
+				<td>{{ tutorial_step.content }}</td>
+				<td>{{ tutorial_step.domElement }}</td>
+				<td>
+					<a href="{{ path('app_tutorial_step_show', {'id': tutorial_step.id}) }}">show</a>
+					<a href="{{ path('app_tutorial_step_edit', {'id': tutorial_step.id}) }}">edit</a>
+				</td>
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="5">no records found</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% if tutorial.id %}
+    <a class="btn btn-sm btn-outline-primary" href="{{ path('app_tutorial_step_new', { tutorialId: tutorial.id }) }}">
+	<i class="bi bi-plus-circle"></i>
+	Ajouter une étape
+</a>
+{% endif %}
+

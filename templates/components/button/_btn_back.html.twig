@@ -1,0 +1,2 @@
+{% set route_return = route_return is defined and route_return is not null ? route_return : 'app_home' %}
+<a href="{{ path(route_return) }}" class="btn btn-sm btn-outline-primary">Retour</a>

@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit TutorialStep{% endblock %}
+
+{% block body %}
+    <h1>Edit TutorialStep</h1>
+
+    {{ include('tutorial_step/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('app_tutorial_step_index') }}">back to list</a>
+
+    {{ include('tutorial_step/_delete_form.html.twig') }}
+{% endblock %}

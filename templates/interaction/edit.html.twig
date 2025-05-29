@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Interaction
+{% endblock %}
+
+{% block body %}
+	<h1>Edit Interaction</h1>
+
+{{ dump(interaction) }}
+	{% include 'interaction/_form.html.twig' with {
+    form: form,
+    serviceInForm: serviceInForm,
+    serviceOutForm: serviceOutForm,
+    interaction: interaction
+} %}
+
+	<a href="{{ path('app_interaction_index') }}">back to list</a>
+
+	{{ include('interaction/_delete_form.html.twig') }}
+{% endblock %}

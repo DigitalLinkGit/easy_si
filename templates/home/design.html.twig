@@ -1,0 +1,138 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Design System
+{% endblock %}
+
+{% block body %}
+	<div class="container my-5">
+		<h1 class="mb-4">Design Test</h1>
+
+		<h2 class="section-title">Alertes</h2>
+		<div style="position: fixed; top: 1rem; right: 1rem; z-index: 1050;">
+			{% include 'components/alert/_alert.html.twig'with {
+		messages: {
+			'success': ['Enregistrement réussi'],
+			'error': ['Une erreur est survenue'],
+			'warning': ['Waring'],
+			'info': ['Information'] }}
+		%}
+
+		</div>
+			<h2 class="section-title">Modal de confirmation</h2>
+			<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">
+				TEST
+			</button>
+
+			{# --- Modale réutilisable --- #}
+			{{ include('components/modal/_modal_confirm.html.twig') }}
+			
+
+			<h2 class="section-title">Modal de tutoriel</h2>
+
+			{% set steps = [
+            {'id': 1, 'stepNumber': 1, 'text': 'Ceci est la barre de navigation.', 'domElement': '#navbarMain'},
+            {'id': 2, 'stepNumber': 2, 'text': 'Cliquez ici pour ajouter une section.', 'domElement': '.btn-add-section'},
+            {'id': 3, 'stepNumber': 3, 'text': 'Ici, vous pouvez voir toutes vos questions.', 'domElement': '#questionList'}
+        ] %}
+
+			{{ include('components/modal/_modal_tutorial.html.twig', { steps: steps }) }}
+			<button class="btn btn-outline-primary mt-4" data-bs-toggle="modal" data-bs-target="#tutorialModal">
+				Lancer le tutoriel
+			</button>
+
+			<h2 class="section-title">Typographie</h2>
+			<p>Texte normal</p>
+			<p class="text-soft">Texte secondaire</p>
+			<p class="fw-bold">Texte en gras</p>
+			<a href="#">Lien normal</a>
+
+			<hr>
+
+			<h2 class="section-title">Boutons</h2>
+			<div class="d-flex gap-3 flex-wrap">
+				<button class="btn btn-primary">Action principale</button>
+				<button class="btn btn-secondary">Secondaire</button>
+				<button class="btn btn-light border">Neutre</button>
+				<button class="btn btn-outline-primary">Outline</button>
+				<button class="btn btn-primary btn-sm">Petit</button>
+			</div>
+
+			<hr>
+
+			<h2 class="section-title">Formulaires</h2>
+			<form>
+				<div class="mb-3">
+					<label for="exampleInput" class="form-label">Champ texte</label>
+					<input type="text" class="form-control" id="exampleInput" placeholder="Texte ici">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Zone de texte</label>
+					<textarea class="form-control" rows="3"></textarea>
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Sélection</label>
+					<select class="form-select">
+						<option>Option 1</option>
+						<option>Option 2</option>
+					</select>
+				</div>
+				<div class="form-check mb-3">
+					<input class="form-check-input" type="checkbox" id="check1">
+					<label class="form-check-label" for="check1">
+						Case à cocher
+					</label>
+				</div>
+				<button type="submit" class="btn btn-primary">Soumettre</button>
+			</form>
+
+			<hr>
+
+			<h2 class="section-title">Tableau</h2>
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Colonne A</th>
+						<th>Colonne B</th>
+						<th>Colonne C</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Donnée 1</td>
+						<td>Donnée 2</td>
+						<td>Donnée 3</td>
+					</tr>
+					<tr>
+						<td>Donnée 4</td>
+						<td>Donnée 5</td>
+						<td>Donnée 6</td>
+					</tr>
+					<tr>
+						<td>Donnée 7</td>
+						<td>Donnée 8</td>
+						<td>Donnée 9</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<hr>
+
+			<h2 class="section-title">Icônes Bootstrap</h2>
+			<div class="d-flex gap-3 flex-wrap fs-4">
+				<i class="bi bi-eye"></i>
+				<i class="bi bi-pencil"></i>
+				<i class="bi bi-trash"></i>
+				<i class="bi bi-plus-circle"></i>
+				<i class="bi bi-check-circle"></i>
+			</div>
+
+			<hr>
+
+			<h2 class="section-title">Cartes / blocs</h2>
+			<div class="card mb-4">
+				<div class="card-body">
+					Ceci est une carte avec un fond léger, un encadrement et des coins arrondis.
+				</div>
+			</div>
+		</div>
+	{% endblock %}

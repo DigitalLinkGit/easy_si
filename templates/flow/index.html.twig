@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Flow index{% endblock %}
+
+{% block body %}
+    <h1>Flow index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for flow in flows %}
+            <tr>
+                <td>{{ flow.id }}</td>
+                <td>{{ flow.name }}</td>
+                <td>{{ flow.description }}</td>
+                <td>
+                    <a href="{{ path('app_flow_show', {'id': flow.id}) }}">show</a>
+                    <a href="{{ path('app_flow_edit', {'id': flow.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_flow_new') }}">Create new</a>
+{% endblock %}

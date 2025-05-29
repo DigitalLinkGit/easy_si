@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Capture{% endblock %}
+
+{% block body %}
+    <h1>Create new Capture</h1>
+
+    {{ include('capture/_form.html.twig') }}
+
+    <a href="{{ path('app_capture_index') }}">back to list</a>
+{% endblock %}

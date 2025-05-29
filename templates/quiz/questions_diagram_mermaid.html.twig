@@ -1,0 +1,37 @@
+{% if instances is defined and instances is not empty %}
+    <div class="card my-4">
+        <div class="card-body">
+            <h5 class="section-title">Arbre des questions (lecture seule) : Mermaid.js</h5>
+
+            <pre class="mermaid">
+graph TD;
+{% for instance in instances %}
+Q{{ instance.id }}["{{ instance.question.name|e('html_attr') }}"]
+{% endfor %}
+
+{% set finCounter = 1 %}
+{% for instance in instances %}
+    {% set hasOut = false %}
+
+    {% for proposal in instance.question.proposals %}
+        {% set condition = instance.getConditionByProposalId(proposal.id) %}
+        {% if condition and condition.nextQuestionInstance %}
+Q{{ instance.id }} -->|{{ proposal.content|e('html_attr') }}| Q{{ condition.nextQuestionInstance.id }}
+            {% set hasOut = true %}
+        {% endif %}
+    {% endfor %}
+
+    {% if instance.nextQuestionInstance %}
+Q{{ instance.id }} --> Q{{ instance.nextQuestionInstance.id }}
+        {% set hasOut = true %}
+    {% endif %}
+
+    {% if not hasOut %}
+Q{{ instance.id }} --> F{{ finCounter }}[/"Fin"/]
+        {% set finCounter = finCounter + 1 %}
+    {% endif %}
+{% endfor %}
+            </pre>
+        </div>
+    </div>
+{% endif %}

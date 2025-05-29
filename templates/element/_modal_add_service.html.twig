@@ -1,0 +1,36 @@
+{% if not element.id %}
+  <div class="alert alert-warning">
+    Vous devez d’abord enregistrer l’élément avant d’ajouter un service.
+  </div>
+{% else %}
+  <button type="button"
+          class="btn btn-outline-primary btn-sm mt-2"
+          data-bs-toggle="modal"
+          data-bs-target="#newServiceModal">
+    + Ajouter un service
+  </button>
+
+  <div class="modal fade" id="newServiceModal" tabindex="-1" aria-labelledby="newServiceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Nouveau service</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+        </div>
+        <div class="modal-body">
+          {{ form_start(serviceForm, {
+            action: path('app_element_add_service', { id: element.id }),
+            method: 'POST',
+            attr: { id: 'service-mini-form' }
+          }) }}
+          {{ form_row(serviceForm.name, { attr: { required: true } }) }}
+          {{ form_row(serviceForm.type, { attr: { required: true } }) }}
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Ajouter</button>
+        </div>
+        {{ form_end(serviceForm) }}
+      </div>
+    </div>
+  </div>
+{% endif %}

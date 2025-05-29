@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Questions
+{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+	{% include 'partials/_page_header.html.twig' with {
+    route_return: 'app_question_index',
+    title: 'Question'
+    } %}
+
+	{% include 'components/table/_table.html.twig' with {
+    items: questions,
+    columns: ['name', 'content', 'category.name'],
+    headers: ['Nom', 'Intitulé', 'Categorie'],
+    filter:true,
+    sort:true,
+    show:true,
+    edit:true,
+    delete:true,
+    base_route: 'app_question'
+    } %}
+</div>
+{% endblock %}

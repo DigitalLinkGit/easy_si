@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Test D3.js - Questionnaire conditionnel vertical{% endblock %}
+
+{% block body %}
+  <h1 class="mb-4">Visualisation conditionnelle verticale</h1>
+
+  <div id="d3-container" style="height: 700px; background: var(--easy-bg, #fff); border: 1px solid var(--easy-border, #ccc); border-radius: var(--easy-radius, 8px); overflow: hidden;"></div>
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('d3-container');
+      const width = container.offsetWidth;
+      const height = container.offsetHeight;
+
+      const svg = d3.select(container)
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .call(d3.zoom().on("zoom", (event) => {
+          g.attr("transform", event.transform);
+        }));
+
+      const g = svg.append("g");
+
+      const nodes = [
+        { id: "Q1", label: "Êtes-vous disponible ?", type: "question", x: 300, y: 50 },
+        { id: "P1", label: "Oui", type: "proposal", x: 300, y: 150 },
+        { id: "Q2", label: "Quel jour ?", type: "question", x: 300, y: 250 },
+        { id: "P2", label: "Lundi", type: "subproposal", x: 200, y: 350 },
+        { id: "P3", label: "Mardi", type: "subproposal", x: 400, y: 350 },
+        { id: "Q3", label: "Souhaitez-vous être recontacté ?", type: "question", x: 300, y: 500 }
+      ];
+
+      const links = [
+        { id: "L1", source: "Q1", target: "P1", label: "Répond Oui" },
+        { id: "L2", source: "P1", target: "Q2", label: "→ Suite" },
+        { id: "L3", source: "Q2", target: "P2", label: "Choix A" },
+        { id: "L4", source: "Q2", target: "P3", label: "Choix B" },
+        { id: "L5", source: "P2", target: "Q3", label: "Condition A" },
+        { id: "L6", source: "P3", target: "Q3", label: "Condition B" }
+      ];
+
+      const nodeById = Object.fromEntries(nodes.map(n => [n.id, n]));
+      links.forEach(link => {
+        link.source = nodeById[link.source];
+        link.target = nodeById[link.target];
+      });
+
+      // Flèche
+      svg.append("defs").append("marker")
+        .attr("id", "arrow")
+        .attr("viewBox", "0 -5 10 10")
+        .attr("refX", 15)
+        .attr("refY", 0)
+        .attr("markerWidth", 6)
+        .attr("markerHeight", 6)
+        .attr("orient", "auto")
+        .append("path")
+        .attr("d", "M0,-5L10,0L0,5")
+        .attr("fill", "#444");
+
+      const linkGroup = g.selectAll(".link")
+        .data(links)
+        .enter()
+        .append("g")
+        .attr("class", "link")
+        .on("click", (event, d) => alert(`Lien : ${d.label}`));
+
+      linkGroup.append("line")
+        .attr("stroke", "#444")
+        .attr("stroke-width", 1.5)
+        .attr("marker-end", "url(#arrow)");
+
+      linkGroup.append("text")
+        .attr("class", "link-label")
+        .attr("text-anchor", "middle")
+        .attr("fill", "#333")
+        .attr("font-size", 10);
+
+      function updateLinks() {
+        linkGroup.select("line")
+          .attr("x1", d => d.source.x)
+          .attr("y1", d => d.source.y)
+          .attr("x2", d => d.target.x)
+          .attr("y2", d => d.target.y);
+
+        linkGroup.select("text")
+          .attr("x", d => (d.source.x + d.target.x) / 2)
+          .attr("y", d => (d.source.y + d.target.y) / 2 - 5)
+          .text(d => d.label);
+      }
+
+      const drag = d3.drag()
+        .on("drag", (event, d) => {
+          d.x = event.x;
+          d.y = event.y;
+          d3.select(event.subject.el)
+            .attr("transform", `translate(${d.x},${d.y})`);
+          updateLinks();
+        });
+
+      const nodeGroup = g.selectAll(".node")
+        .data(nodes)
+        .enter()
+        .append("g")
+        .attr("class", "node")
+        .attr("transform", d => `translate(${d.x},${d.y})`)
+        .each((d, i, nodes) => { d.el = nodes[i]; })
+        .on("click", (event, d) => alert(`${d.type.toUpperCase()} : ${d.label}`))
+        .call(drag);
+
+      nodeGroup.each(function(d) {
+        if (d.type === "question") {
+          d3.select(this)
+            .append("rect")
+            .attr("x", -120)
+            .attr("y", -20)
+            .attr("width", 240)
+            .attr("height", 40)
+            .attr("fill", "var(--easy-primary, #851cba)")
+            .attr("stroke", "#222")
+            .attr("rx", 10);
+        } else if (d.type === "proposal") {
+          d3.select(this)
+            .append("ellipse")
+            .attr("rx", 60)
+            .attr("ry", 20)
+            .attr("fill", "var(--easy-accent, #2395b2)")
+            .attr("stroke", "#333");
+        } else {
+          d3.select(this)
+            .append("ellipse")
+            .attr("rx", 60)
+            .attr("ry", 20)
+            .attr("fill", "#aab81f")  // Nouvelle couleur "condition secondaire"
+            .attr("stroke", "#333");
+        }
+      });
+
+      nodeGroup.append("text")
+        .attr("text-anchor", "middle")
+        .attr("dy", 5)
+        .attr("fill", "#fff")
+        .style("font-size", "13px")
+        .text(d => d.label);
+
+      updateLinks();
+    });
+  </script>
+{% endblock %}

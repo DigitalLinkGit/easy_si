@@ -1,0 +1,10 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Category{% endblock %}
+
+{% block body %}
+    <h2 class="section-title">Modifier catégorie</h2>
+
+    {{ include('category/_form.html.twig', {'button_label': 'Update'}) }}
+
+{% endblock %}

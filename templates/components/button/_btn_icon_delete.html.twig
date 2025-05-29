@@ -1,0 +1,13 @@
+<form method="post" action="{{ path(base_route ~ '_delete', {'id': id}) }}" class="d-inline">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ id) }}">
+
+    <button type="button"
+        class="btn btn-outline-danger btn-sm"
+        data-confirm="true"
+        data-action="{{ path(base_route ~ '_delete', {'id': id}) }}"
+        data-token="{{ csrf_token('delete' ~ id) }}"
+        data-message="Voulez-vous vraiment supprimer cet élément ?"
+        title="Supprimer">
+        <i class="bi bi-trash"></i>
+    </button>
+</form>

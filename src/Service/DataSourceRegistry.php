@@ -1,0 +1,23 @@
+<?php
+namespace App\Service;
+
+use App\Service\DataSourceInterface;
+
+class DataSourceRegistry
+{
+    /**
+     * @param iterable<DataSourceInterface> $handlers
+     */
+    public function __construct(private iterable $handlers) {}
+
+    public function get(string $source): DataSourceInterface
+    {
+        foreach ($this->handlers as $handler) {
+            if ($handler->supports($source)) {
+                return $handler;
+            }
+        }
+
+        throw new \InvalidArgumentException("Aucun gestionnaire trouvé pour la source '$source'");
+    }
+}

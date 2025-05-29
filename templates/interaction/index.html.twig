@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Interaction index{% endblock %}
+
+{% block body %}
+    <h1>Interaction index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Label</th>
+                <th>ActionName</th>
+                <th>Description</th>
+                <th>Logic</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for interaction in interactions %}
+            <tr>
+                <td>{{ interaction.id }}</td>
+                <td>{{ interaction.label }}</td>
+                <td>{{ interaction.dataName }}</td>
+                <td>{{ interaction.description }}</td>
+                <td>{{ interaction.logic ? interaction.logic|json_encode : '' }}</td>
+                <td>
+                    <a href="{{ path('app_interaction_show', {'id': interaction.id}) }}">show</a>
+                    <a href="{{ path('app_interaction_edit', {'id': interaction.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_interaction_new') }}">Create new</a>
+{% endblock %}

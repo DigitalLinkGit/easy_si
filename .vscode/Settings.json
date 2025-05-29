@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "*.twig": "twig"
+  },
+  "emmet.includeLanguages": {
+    "twig": "html"
+  },
+  "html.validate": {
+    "scripts": false,
+    "styles": false
+  }
+}

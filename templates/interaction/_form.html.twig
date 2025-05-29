@@ -1,0 +1,202 @@
+{{ form_start(form) }}
+
+{% if interaction is not defined %}
+	<div class="alert alert-danger">Variable "interaction" manquante !</div>
+{% endif %}
+
+<div
+	class="row mb-4">
+
+	{# ----- IN ----- #}
+	<div class="col-md-4">
+		<h5 class="mb-3">In</h5>
+
+		{{ form_row(form.elementIn, {
+      attr: { 'data-service-target': 'serviceIn' }
+    }) }}
+
+		<div class="mb-2 d-flex gap-2 align-items-start">
+			<div class="flex-grow-1">
+				{{ form_row(form.serviceIn) }}
+			</div>
+			<button type="button" class="btn btn-outline-primary btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#addServiceInModal" {% if interaction.id is null %} disabled {% endif %}>
+				<i class="bi bi-plus-circle"></i>
+				Nouveau
+			</button>
+		</div>
+
+		{# DataTable In : affichage ou création #}
+		{% if interaction.dataTablesIn is not empty %}
+			{% for dataTable in interaction.dataTablesIn %}
+				<div class="text-success mt-2">
+					<i class="bi bi-table"></i>
+					{{ dataTable.name }}
+				</div>
+			{% endfor %}
+		{% else %}
+			<a href="#" id="createDataTableIn" class="btn btn-outline-success btn-sm d-none mt-1">
+				<i class="bi bi-table"></i>
+				Créer une DataTable
+			</a>
+		{% endif %}
+
+	</div>
+
+	{# ----- GENERAL ----- #}
+	<div class="col-md-4">
+		<h5 class="mb-3">Général</h5>
+		{{ form_row(form.label) }}
+		{{ form_row(form.dataName) }}
+		{{ form_row(form.description) }}
+	</div>
+
+	{# ----- OUT ----- #}
+	<div class="col-md-4">
+		<h5 class="mb-3">Out</h5>
+
+		{{ form_row(form.elementOut, {
+      attr: { 'data-service-target': 'serviceOut' }
+    }) }}
+
+		<div class="mb-2 d-flex gap-2 align-items-start">
+			<div class="flex-grow-1">
+				{{ form_row(form.serviceOut) }}
+			</div>
+			<button type="button" class="btn btn-outline-primary btn-sm mt-1" data-bs-toggle="modal" data-bs-target="#addServiceOutModal" {% if interaction.id is null %} disabled {% endif %}>
+				<i class="bi bi-plus-circle"></i>
+				Nouveau
+			</button>
+		</div>
+
+		{# DataTable Out : affichage ou création #}
+		{% if interaction.dataTablesOut %}
+			<div class="text-success mt-2">
+				<i class="bi bi-table"></i>
+				{{ interaction.dataTablesOut.name }}
+			</div>
+		{% else %}
+			<a href="#" id="createdataTablesOut" class="btn btn-outline-success btn-sm d-none mt-1">
+				<i class="bi bi-table"></i>
+				Créer une DataTable
+			</a>
+		{% endif %}
+	</div>
+
+</div>
+
+{# ----- LOGIC ----- #}
+<div class="mb-4">
+	{{ form_row(form.logic) }}
+</div>
+
+{{ include('components/button/_btn_save.html.twig') }}
+{{ form_end(form, { render_rest: false }) }}
+
+{# ----- MODALES SERVICE ----- #}
+{% if serviceInForm is defined %}
+	<div class="modal fade" id="addServiceInModal" tabindex="-1" aria-labelledby="addServiceInModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Nouveau service entrant</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					{{ form_start(serviceInForm, {
+            action: path('app_interaction_add_service', {
+              id: interaction.id,
+              element: interaction.elementIn.id
+            })
+          }) }}
+					{{ form_widget(serviceInForm) }}
+					<div class="text-end mt-3">
+						<button type="submit" class="btn btn-primary">Créer</button>
+					</div>
+					{{ form_end(serviceInForm) }}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endif %}
+
+{% if serviceOutForm is defined %}
+	<div class="modal fade" id="addServiceOutModal" tabindex="-1" aria-labelledby="addServiceOutModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">Nouveau service sortant</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					{{ form_start(serviceOutForm, {
+            action: path('app_interaction_add_service', {
+              id: interaction.id,
+              element: interaction.elementOut.id
+            })
+          }) }}
+					{{ form_widget(serviceOutForm) }}
+					<div class="text-end mt-3">
+						<button type="submit" class="btn btn-primary">Créer</button>
+					</div>
+					{{ form_end(serviceOutForm) }}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endif %}
+
+{# ----- JS LOGIC ----- #}
+<script>
+	document.addEventListener('DOMContentLoaded', function () {
+const interactionId = {{ interaction.id|default(0) }};
+
+['serviceIn', 'serviceOut'].forEach(serviceTarget => {
+const serviceSelect = document.querySelector(`select[name$="[${serviceTarget}]"]`);
+const datatableLink = document.getElementById(`createDataTable${
+serviceTarget.charAt(0).toUpperCase() + serviceTarget.slice(1)
+}`);
+
+if (! serviceSelect || ! datatableLink)
+return;
+
+
+serviceSelect.addEventListener('change', function () {
+const selectedOption = this.selectedOptions[0];
+if (! selectedOption || ! selectedOption.value || ! selectedOption.dataset.type) {
+datatableLink.classList.add('d-none');
+return;
+}
+
+const serviceId = selectedOption.value;
+const serviceType = selectedOption.dataset.type;
+const url = `/datatable/new?interaction=${interactionId}&service=${serviceId}&type=${serviceType}`;
+
+datatableLink.href = url;
+datatableLink.classList.remove('d-none');
+});
+});
+
+document.querySelectorAll('select[data-service-target]').forEach(function (elementSelect) {
+elementSelect.addEventListener('change', function () {
+const elementId = this.value;
+const target = this.dataset.serviceTarget;
+const serviceSelect = document.querySelector(`select[name$="[${target}]"]`);
+
+if (! elementId || ! serviceSelect)
+return;
+
+
+fetch('/services-by-element/' + elementId).then(r => r.json()).then(services => {
+serviceSelect.innerHTML = '<option value="">-- Choisir un service --</option>';
+services.forEach(service => {
+const option = document.createElement('option');
+option.value = service.id;
+option.textContent = service.label;
+option.dataset.type = service.type;
+serviceSelect.appendChild(option);
+});
+});
+});
+});
+});
+</script>

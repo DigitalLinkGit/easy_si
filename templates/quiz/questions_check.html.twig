@@ -1,0 +1,71 @@
+{% if instances is defined and instances is not empty %}
+
+	<div class="card my-4">
+		<div class="card-body">
+			<h5 class="section-title">Vérification des relations conditionnelles</h5>
+			{{ dump(instances) }}
+			<table class="table table-sm">
+				<thead>
+					<tr>
+						<th>Level</th>
+						<th>Question</th>
+						<th>Proposition</th>
+						<th>chemin</th>
+						<th>→ Question suivante</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for instance in instances %}
+						{% if instance.conditions|length == 0 %}
+							<tr>
+								<td>{{ instance.level }}</td>
+								<td>{{ instance.id }}
+									:
+									{{ instance.question.name }}</td>
+								{% if instance.nextQuestionInstance %}
+									<td></td>
+									<td>
+										<span class="badge bg-secondary ms-2">défaut</span>
+									</td>
+									<td>{{ instance.nextQuestionInstance.question.name }}</td>
+
+								{% else %}
+									<td></td>
+									<td>
+										<span class="badge bg-danger ms-2">fin</span>
+									</td>
+									<td></td>
+									<td></td>
+								{% endif %}
+
+
+							</tr>
+						{% endif %}
+						{% if instance.nextQuestionInstance is null %}
+							{% for proposal in instance.question.proposals %}
+								{% set condition = instance.getConditionByProposalId(proposal.id) %}
+
+								<tr>
+									<td>{{ instance.level }}</td>
+									<td>{{ instance.id }}
+										:
+										{{ instance.question.name }}</td>
+									<td>{{ proposal.content }}</td>
+
+									{% if condition and condition.nextQuestionInstance %}
+										<td><span class="badge bg-info ms-2">condition</span></td>
+										<td>{{ condition.nextQuestionInstance.question.name }}</td>
+									{% else %}
+										<td><span class="badge bg-danger ms-2">fin</span></td>
+										<td></td>
+									{% endif %}
+								</tr>
+
+							{% endfor %}
+						{% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	</div>
+{% endif %}

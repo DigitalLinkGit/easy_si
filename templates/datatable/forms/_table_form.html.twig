@@ -1,0 +1,67 @@
+{% if headers is not defined or matrix is empty %}
+  <div class="text-muted text-center">Aucune donnée à afficher.</div>
+{% else %}
+  {% set table_id = 'table_' ~ random() %}
+
+  {{ form_start(tableForm) }}
+    <div class="mb-3">
+      {{ form_row(tableForm.name) }}
+    </div>
+
+    <div class="scrollable-table" style="max-height: 500px; overflow-y: auto;">
+      <table class="table table-hover align-middle resizable-table" id="{{ table_id }}">
+        <thead class="table-light">
+          <tr>
+            {% for i, header in headers %}
+              <th data-col="{{ i }}" class="resizable-header sticky-header" style="top: 0; z-index: 3;">
+                <div class="header-content">{{ header }}</div>
+                <div class="resizer" onmousedown="initResize(event)"></div>
+              </th>
+            {% endfor %}
+            <th class="sticky-header" style="top: 0; z-index: 3;"></th>
+          </tr>
+          <tr class="filter-row">
+            {% for i in 0..headers|length - 1 %}
+              <th data-col="{{ i }}" class="filter-control sticky-filter" style="top: 40px; z-index: 2;">
+                <div class="d-flex flex-nowrap gap-1 align-items-center" style="min-width: 180px;">
+                  <input type="text" class="form-control form-control-sm filter"
+                         placeholder="Filtrer {{ headers[i] }}"
+                         oninput="filterTable(this)"
+                         data-filter-column="{{ i }}"
+                         data-table-id="{{ table_id }}">
+                  <button type="button" class="btn btn-sm" onclick="sortTable('{{ table_id }}', {{ i }})" title="Trier cette colonne">
+                    <i class="bi bi-sort-alpha-down"></i>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-link text-danger" onclick="removeColumn('{{ table_id }}', {{ i }})" title="Supprimer la colonne">
+                    <i class="bi bi-x-circle"></i>
+                  </button>
+                </div>
+              </th>
+            {% endfor %}
+            <th class="sticky-filter" style="top: 40px; z-index: 2;"></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in matrix %}
+            <tr>
+              {% for i, cell in row %}
+                <td contenteditable="true" style="outline: none;" data-col="{{ i }}" data-original="{{ cell.value }}">
+                  {{ cell.value }}
+                </td>
+              {% endfor %}
+              <td>
+                <button type="button" class="btn btn-sm btn-link text-danger" onclick="removeRow(this)" title="Supprimer la ligne">
+                  <i class="bi bi-x-circle"></i>
+                </button>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-3">
+      <button type="submit" class="btn btn-success">Enregistrer</button>
+    </div>
+
+{% endif %}

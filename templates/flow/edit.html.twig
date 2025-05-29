@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit Flow
+{% endblock %}
+
+{% block body %}
+	<h1>Edit Flow</h1>
+
+	{{ include('flow/_form.html.twig', {'button_label': 'Update'}) }}
+	{{ include('flow/_modal_add_interaction.html.twig') }}
+
+{% endblock %}

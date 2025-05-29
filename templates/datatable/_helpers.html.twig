@@ -1,0 +1,7 @@
+{% macro render_value(value) %}
+    {% if value is iterable and value is not same as(null) and value is not same as('') and value is not constant('true') and value is not constant('false') %}
+        <pre>{{ value|json_encode(constant('JSON_PRETTY_PRINT')) }}</pre>
+    {% else %}
+        {{ value }}
+    {% endif %}
+{% endmacro %}

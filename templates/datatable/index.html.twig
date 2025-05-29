@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Questions
+{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+	{% include 'partials/_page_header.html.twig' with {
+    title: 'Données'
+    } %}
+
+	{% include 'components/table/_table.html.twig' with {
+    items: dataTable,
+    columns: ['name', 'source'],
+    headers: ['Nom', 'Source'],
+    filter:true,
+    sort:true,
+    edit:true,
+    delete:false,
+    show:false,
+    select:false,
+    base_route: 'app_datatable',
+    select: true,
+    select_params: {
+      interaction: interactionId,
+      role: dataRole
+    }
+    } %}
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{{ form_start(form) }}
+
+<div class="border rounded p-3 mb-4">
+	<h5 class="mb-3">Définition du flow</h5>
+	<div class="row mb-3">
+		<div class="col-md-6">
+			{{ form_row(form.name) }}
+		</div>
+		<div class="col-md-6">
+			{{ form_row(form.starter) }}
+		</div>
+	</div>
+	<div class="mb-3">
+		{{ form_row(form.description) }}
+	</div>
+</div>
+
+<div class="border rounded p-3 mb-4">
+	<h5 class="mb-3">Interactions</h5>
+
+	{% if form.vars.value.interactions|length > 0 %}
+		{% for interaction in form.vars.value.interactions %}
+			<div class="interaction-bar border rounded d-flex align-items-center p-2 mb-2 gap-3">
+				<div class="d-flex align-items-center gap-2">
+					{% set in = interaction.elementIn %}
+					{% if in %}
+						{% if in.logo %}
+							<img src="{{ asset('uploads/logos/' ~ in.logo) }}" alt="logo" class="rounded" style="height: 24px;">
+						{% endif %}
+						<strong>{{ in.name }}</strong>
+					{% endif %}
+				</div>
+
+				<div class="flex-fill">
+					<span class="form-control form-control-sm bg-light">{{ interaction.label }}</span>
+				</div>
+
+				<div class="d-flex align-items-center gap-2">
+					{% set out = interaction.elementOut %}
+					{% if out %}
+						{% if out.logo %}
+							<img src="{{ asset('uploads/logos/' ~ out.logo) }}" alt="logo" class="rounded" style="height: 24px;">
+						{% endif %}
+						<strong>{{ out.name }}</strong>
+					{% endif %}
+				</div>
+
+				<div class="d-flex gap-2 ms-3">
+					{% if interaction.id %}
+						<a href="{{ path('app_interaction_edit', { id: interaction.id }) }}" class="btn btn-outline-secondary btn-sm" title="Partie technique">
+							<i class="bi bi-sliders"></i>
+						</a>
+						<button type="button" class="btn btn-outline-danger btn-sm" onclick="submitDeleteForm('{{ path('app_flow_delete_interaction', { id: interaction.id }) }}', '{{ csrf_token('delete_interaction_' ~ interaction.id) }}')" title="Supprimer">
+							<i class="bi bi-trash"></i>
+						</button>
+
+					{% endif %}
+				</div>
+			</div>
+		{% endfor %}
+	{% else %}
+		<p class="text-muted">Aucune interaction.</p>
+	{% endif %}
+</div>
+
+{{ include('components/button/_btn_save.html.twig') }}
+{{ form_end(form) }}
+
+<script>
+  function submitDeleteForm(action, token) {
+    if (!confirm('Supprimer cette interaction ?')) return;
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = action;
+
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_token';
+    csrfInput.value = token;
+
+    form.appendChild(csrfInput);
+    document.body.appendChild(form);
+    form.submit();
+  }
+</script>
+

@@ -1,0 +1,76 @@
+{# Composant générique de tableau avec filtres et actions #}
+
+{% set items = items is defined ? items : [] %}
+{% set columns = columns is defined ? columns : [] %}
+{% set headers = headers is defined ? headers : null %}
+{% set with_actions = with_actions is defined ? with_actions : false %}
+{% set base_route = base_route is defined ? base_route : null %}
+{% set filter = filter is defined ? filter : false %}
+{% set table_id = 'table_' ~ random() %}
+{% set sort = sort is defined ? sort : false %}
+
+{# Tableau #}
+<table class="table table-hover align-middle" id="{{ table_id }}">
+	<thead class="table-light">
+		<tr>
+			{% for header in headers %}
+				<th>{{ header }}</th>
+			{% endfor %}
+			{% if with_actions %}
+				<th>
+					{% if not filter %}
+						{% include 'components/button/_btn_new.html.twig' with { route_new: base_route ~ '_new' } %}
+					{% endif %}
+				</th>
+			{% endif %}
+		</tr>
+
+		{% if filter or sort %}
+			<tr class="filter-row">
+				{% for column in columns %}
+					{% set column_index = loop.index0 %}
+					<td class="position-relative">
+            <div class="d-flex gap-1">
+							{% if filter %}
+								<input type="text" class="form-control form-control-sm filter" placeholder="Filtrer {{ headers[column_index] ?? column }}" oninput="filterTable(this)" data-filter-column="{{ column_index }}" data-table-id="{{ table_id }}">
+							{% endif %}
+							{% if sort %}
+								<button type="button" class="btn btn-sm" onclick="sortTable('{{ table_id }}', {{ column_index }})" title="Trier cette colonne">
+									<i class="bi bi-sort-alpha-down"></i>
+								</button>
+							{% endif %}
+              </div>
+					</td>
+				{% endfor %}
+				{% if with_actions %}
+					<td>
+						{% include 'components/button/_btn_new.html.twig' with { route_new: base_route ~ '_new' } %}
+					</td>
+				{% endif %}
+			</tr>
+		{% endif %}
+	</thead>
+
+	<tbody>
+		{% for item in items %}
+			<tr>
+				{% for property in columns %}
+					<td>{{ attribute_chain(item, property) }}</td>
+				{% endfor %}
+				{% if with_actions %}
+					<td class="text-nowrap btn-fixed-width">
+						{% include 'components/button/_btn_icon_show.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
+						{% include 'components/button/_btn_icon_edit.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
+						{% include 'components/button/_btn_icon_delete.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
+					</td>
+				{% endif %}
+			</tr>
+		{% else %}
+			<tr>
+				<td colspan="{{ columns|length + (with_actions ? 1 : 0) }}" class="text-muted text-center">
+					Aucun élément à afficher.
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail de la quiz{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+
+    <div class="section-title d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Section : {{ quiz.name }}</h2>
+        <a href="{{ path('app_quiz_index') }}" class="btn btn-outline-primary btn-sm">Retour</a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            {{ form_start(form) }}
+                <fieldset disabled>
+                    {{ form_row(form.name) }}
+                    {{ form_row(form.description) }}
+                    {{ form_row(form.role) }}
+                </fieldset>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

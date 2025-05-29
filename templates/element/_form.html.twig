@@ -1,0 +1,68 @@
+{{ form_start(form) }}
+
+<div class="border rounded p-3 mb-4">
+	<h5 class="mb-3">Élément</h5>
+	<div class="row mb-3">
+		<div class="col-md-6">
+			{{ form_row(form.name) }}
+		</div>
+		<div class="col-md-6">
+			{{ form_row(form.type) }}
+		</div>
+	</div>
+	<div class="mb-3">
+		{{ form_row(form.description) }}
+	</div>
+	<div class="mb-3">
+		{{ form_row(form.logo) }}
+	</div>
+</div>
+
+<div class="border rounded p-3 mb-4">
+	<h5 class="mb-3">Services</h5>
+
+	{% if form.vars.value.services|length > 0 %}
+		{% for service in form.vars.value.services %}
+			<div class="border rounded d-flex align-items-center justify-content-between p-2 mb-2">
+				<div>
+					<strong>{{ service.name }}</strong>
+					<span class="text-muted small ms-2">({{ service.type }})</span>
+				</div>
+				<div class="d-flex gap-2">
+					<a href="{{ path('app_service_edit', { id: service.id }) }}" class="btn btn-outline-secondary btn-sm" title="Détail">
+						<i class="bi bi-sliders"></i>
+					</a>
+					<button type="button" class="btn btn-outline-danger btn-sm" onclick="submitDeleteForm('{{ path('app_element_delete_service', { id: service.id }) }}', '{{ csrf_token('delete_service_' ~ service.id) }}')" title="Supprimer">
+						<i class="bi bi-trash"></i>
+					</button>
+				</div>
+			</div>
+		{% endfor %}
+	{% else %}
+		<p class="text-muted">Aucun service.</p>
+	{% endif %}
+
+
+</div>
+
+{{ include('components/button/_btn_save.html.twig') }}
+{{ form_end(form) }}
+
+<script>
+  function submitDeleteForm(action, token) {
+    if (!confirm('Supprimer cet élément ?')) return;
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = action;
+
+    const csrfInput = document.createElement('input');
+    csrfInput.type = 'hidden';
+    csrfInput.name = '_token';
+    csrfInput.value = token;
+
+    form.appendChild(csrfInput);
+    document.body.appendChild(form);
+    form.submit();
+  }
+</script>

@@ -1,0 +1,25 @@
+{
+  "recommendations": [
+    "bmewburn.vscode-intelephense-client",        // Intelligence PHP, suggestions et jump to
+    "junstyle.php-cs-fixer",                      // Formatage auto et gestion des 'use'
+    "xdebug.php-debug",                           // Debugging PHP
+    "symfony.symfony-vscode",                     // Support pour Symfony
+    "mblode.twig-language-2",                     // Support Twig 2
+    "formulahendry.auto-close-tag",               // HTML / Twig
+    "formulahendry.auto-rename-tag",              // HTML / Twig
+    "EditorConfig.EditorConfig",                  // Uniformisation projet (indentation, ligne vide, etc.)
+    "esbenp.prettier-vscode",                     // Formatage JS/CSS/HTML
+    "streetsidesoftware.code-spell-checker",      // Correction orthographique
+    "pkief.material-icon-theme",                  // Icônes de fichiers utiles
+    "christian-kohler.path-intellisense",         // Autocomplétion de chemins
+    "mikestead.dotenv",                           // Support `.env`
+    "VisualStudioExptTeam.vscodeintellicode",     // Suggestions AI
+    "donjayamanne.githistory",                    // Historique Git visuel
+    "eamodio.gitlens",                            // Git avancé dans l'UI
+    "natqe.reload",
+    "thenouillet.symfony-vscode",
+    "nadim-vscode.symfony-code-snippets",
+    "cronos87.symfony-snippets",
+    "whatwedo.twig" // Reload rapide de la fenêtre
+  ]
+}
