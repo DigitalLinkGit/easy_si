@@ -18,7 +18,7 @@ class ParticipantAssignment
     #[ORM\ManyToOne]
     private ?Role $role = null;
 
-    #[ORM\ManyToOne(inversedBy: 'assignments')]
+    #[ORM\ManyToOne(inversedBy: 'participantAssignments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?CaptureInstance $captureInstance = null;
 

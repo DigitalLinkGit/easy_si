@@ -24,14 +24,14 @@ services:
   # add more service definitions when explicit configuration is needed
   # please note that last definitions always *replace* previous ones
 
-  App\Service\DataHandler\:
-    resource: "../src/Service/DataHandler/"
+  App\Design\Service\DataHandler\:
+    resource: "../src/Design/Service/DataHandler/"
     tags: ["app.data_source"]
 
-  App\Service\DataSourceRegistry:
+  App\Design\Service\DataSourceRegistry:
     arguments:
       $handlers: !tagged_iterator app.data_source
 
-  App\Service\UploadHelper:
+  App\Design\Service\UploadHelper:
     arguments:
       $logosDirectory: "%logos_directory%"

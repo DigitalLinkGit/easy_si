@@ -30,9 +30,10 @@ class QuestionInstance
     private Collection $conditions;
 
 
-    #[ORM\ManyToOne]
+    #[ORM\ManyToOne(inversedBy: 'instances')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Question $question = null;
+
 
     #[ORM\ManyToOne(inversedBy: 'questionsInstances')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]

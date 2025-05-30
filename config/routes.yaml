@@ -9,3 +9,9 @@ capture_controllers:
         path: ../src/Capture/Controller/
         namespace: App\Capture\Controller
     type: attribute
+
+design_controllers:
+    resource:
+        path: ../src/Design/Controller/
+        namespace: App\Design\Controller
+    type: attribute

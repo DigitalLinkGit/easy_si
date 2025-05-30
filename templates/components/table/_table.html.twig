@@ -5,7 +5,6 @@
 {% set headers = headers is defined ? headers : null %}
 {% set base_route = base_route is defined ? base_route : null %}
 {% set table_id = 'table_' ~ random() %}
-{% set effective_params = select_params is defined and select_params is iterable ? select_params : {} %}
 
 
 {# Actions individuelles #}
@@ -14,8 +13,11 @@
 {% set show = show is defined ? show : false %}
 {% set edit = edit is defined ? edit : false %}
 {% set delete = delete is defined ? delete : false %}
-{% set select = select is defined ? select : false %}
+{% set add = add is defined ? add : false %}
 
+{% if add and not filter %}
+	{% include 'components/button/_btn_new.html.twig' %}	
+{% endif %}
 
 {# Tableau #}
 <table class="table table-hover align-middle" id="{{ table_id }}">
@@ -24,7 +26,7 @@
 			{% for header in headers %}
 				<th>{{ header }}</th>
 			{% endfor %}
-			{% if show or edit or delete or select %}
+			{% if show or edit or delete %}
 				<th></th>
 			{% endif %}
 		</tr>
@@ -45,13 +47,18 @@
 						</div>
 					</td>
 				{% endfor %}
-				{% if show or edit or delete or select %}<td></td>{% endif %}
+				{% if show or edit or delete %}
+				<td>
+					{% if add %}
+						{% include 'components/button/_btn_new.html.twig' %}	
+					{% endif %}
+				</td>
+				{% endif %}
 			</tr>
 		{% endif %}
 	</thead>
 	<tbody>
 		{% for item in items %}
-    {% set effective_params = effective_params|merge({ table: attribute(item, 'id') }) %}
 			<tr>
 				{% for property in columns %}
 					<td>{{ attribute_chain(item, property) }}</td>
@@ -67,9 +74,6 @@
 						{% if delete %}
 							{% include 'components/button/_btn_icon_delete.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
 						{% endif %}
-						{% if select %}
-              {% include 'components/button/_btn_icon_select.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
-            {% endif %}
 					</td>
 				{% endif %}
 			</tr>

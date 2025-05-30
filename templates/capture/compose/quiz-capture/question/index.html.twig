@@ -7,7 +7,7 @@
 <div class="container my-4">
 	{% include 'partials/_page_header.html.twig' with {
     route_return: 'app_question_index',
-    title: 'Question'
+    title: 'Questions :'
     } %}
 
 	{% include 'components/table/_table.html.twig' with {
@@ -19,6 +19,7 @@
     show:true,
     edit:true,
     delete:true,
+    add:true,
     base_route: 'app_question'
     } %}
 </div>

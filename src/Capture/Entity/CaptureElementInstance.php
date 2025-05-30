@@ -13,7 +13,7 @@ class CaptureElementInstance
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(inversedBy: 'elementInstances')]
+    #[ORM\ManyToOne(inversedBy: 'captureElementInstance')]
     private ?CaptureInstance $captureInstance = null;
 
     #[ORM\ManyToOne]

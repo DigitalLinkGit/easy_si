@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Capture\Entity;
+
 use App\Capture\Entity\ParticipantAssignment;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -17,11 +18,12 @@ class CaptureInstance
     #[ORM\ManyToOne]
     private ?Capture $capture = null;
 
-    #[ORM\OneToMany(mappedBy: 'captureElementInst', targetEntity: CaptureElementInstance::class)]
+    #[ORM\OneToMany(mappedBy: 'captureInstance', targetEntity: CaptureElementInstance::class)]
     private Collection $captureElementInstance;
 
-    #[ORM\OneToMany(mappedBy: 'captureElementInst', targetEntity: ParticipantAssignment::class)]
+    #[ORM\OneToMany(mappedBy: 'captureInstance', targetEntity: ParticipantAssignment::class)]
     private Collection $participantAssignments;
+
 
     public function __construct()
     {
@@ -52,6 +54,7 @@ class CaptureInstance
     {
         return $this->captureElementInstance;
     }
+
 
     public function addElementInstance(CaptureElementInstance $captureElementInst): static
     {
@@ -103,14 +106,6 @@ class CaptureInstance
         return $this;
     }
 
-    /**
-     * @return Collection<int, CaptureElementInstance>
-     */
-    public function getCaptureElementInsts(): Collection
-    {
-        return $this->captureElementInstance;
-    }
-
     public function addCaptureElementInstance(CaptureElementInstance $captureElementInst): static
     {
         if (!$this->captureElementInstance->contains($captureElementInst)) {
@@ -131,13 +126,5 @@ class CaptureInstance
         }
 
         return $this;
-    }
-
-    /**
-     * @return Collection<int, CaptureElementInstance>
-     */
-    public function getCaptureElementInstance(): Collection
-    {
-        return $this->captureElementInstance;
     }
 }

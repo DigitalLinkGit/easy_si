@@ -1,4 +1,4 @@
-{# Composant générique basé sur une entité Table #}
+{# Composant générique basé sur une entité DataTable #}
 
 {% if cells is not defined or cells is empty %}
 	<div class="text-muted text-center">Aucune cellule à afficher.</div>
@@ -92,16 +92,18 @@
 <script>
 	function removeRow(button) {
 const row = button.closest('tr');
-if (row)
+if (row) 
 row.remove();
+
 
 
 }
 
 function removeColumn(tableId, colIndex) {
 const table = document.getElementById(tableId);
-if (! table)
+if (! table) 
 return;
+
 
 
 for (const row of table.rows) {

@@ -1,38 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Capture index{% endblock %}
+{% block title %}Captures
+{% endblock %}
 
 {% block body %}
-    <h1>Capture index</h1>
+<div class="container my-4">
+	{% include 'partials/_page_header.html.twig' with {
+    route_return: 'app_capture_index',
+    title: 'Captures :'
+    } %}
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for capture in captures %}
-            <tr>
-                <td>{{ capture.id }}</td>
-                <td>{{ capture.name }}</td>
-                <td>{{ capture.description }}</td>
-                <td>
-                    <a href="{{ path('app_capture_show', {'id': capture.id}) }}">show</a>
-                    <a href="{{ path('app_capture_edit', {'id': capture.id}) }}">edit</a>
-
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-    <a href="{{ path('app_capture_new') }}">Create new</a>
+	{% include 'components/table/_table.html.twig' with {
+    items: captures,
+    columns: ['name', 'description'],
+    headers: ['Nom', 'Description'],
+    filter:true,
+    sort:true,
+    show:true,
+    edit:true,
+    delete:true,
+    add:true,
+    base_route: 'app_capture'
+    } %}
+</div>
 {% endblock %}

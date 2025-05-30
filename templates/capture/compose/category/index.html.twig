@@ -1,50 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Catégories{% endblock %}
+{% block title %}Catégories
+{% endblock %}
 
 {% block body %}
 <div class="container my-4">
+	{% include 'partials/_page_header.html.twig' with {
+    route_return: 'app_category_index',
+    title: 'Catégories :'
+    } %}
 
-    <div class="section-title d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Catégories</h2>
-        <a href="{{ path('app_category_new') }}" class="btn btn-outline-primary" title="Ajouter une catégorie">
-            <i class="bi bi-plus"></i>
-            Ajouter une catégorie
-        </a>
-    </div>
-
-    <table class="table table-compact">
-        <thead class="table-primary text-white rounded-top">
-            <tr>
-                <th>Nom</th>
-                <th>Description</th>
-                <th class="text-end"></th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for category in categories %}
-            <tr>
-                <td>{{ category.name }}</td>
-                <td>{{ category.description }}</td>
-                <td class="text-end">
-                    <div class="d-flex justify-content-end gap-1">
-                        <a href="{{ path('app_category_show', {'id': category.id}) }}" class="btn btn-sm btn-outline-primary btn-icon" title="Aperçu">
-                            <i class="bi bi-eye"></i>
-                        </a>
-                        <a href="{{ path('app_category_edit', {'id': category.id}) }}" class="btn btn-sm btn-outline-primary btn-icon" title="Modifier">
-                            <i class="bi bi-pencil"></i>
-                        </a>
-                        {{ include('capture/compose/category/_delete_form.html.twig', { 'category': category }) }}
-                    </div>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3" class="text-center text-soft">Aucune catégorie pour le moment.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
+	{% include 'components/table/_table.html.twig' with {
+    items: categories,
+    columns: ['name', 'description'],
+    headers: ['Nom', 'Description'],
+    filter:true,
+    sort:true,
+    show:true,
+    edit:true,
+    delete:true,
+    add:true,
+    base_route: 'app_category'
+    } %}
 </div>
 {% endblock %}
