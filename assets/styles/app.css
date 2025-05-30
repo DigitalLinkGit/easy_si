@@ -1,15 +1,15 @@
 :root {
   /* === Palette === */
-  --main-color:#29a5c1;
-  --main-color-accent-dark:#006075;
-  --main-color-accent-light:#54E0FF;
+  --main-color: #29a5c1;
+  --main-color-accent-dark: #006075;
+  --main-color-accent-light: #54e0ff;
 
-  --main-black:#0A2239;
-  --main-gray:#536878;
-  --main-white:#FFFFFF;
+  --main-black: #0a2239;
+  --main-gray: #536878;
+  --main-white: #ffffff;
 
-  --main-surface:#FCFFFC;
-  --main-disabled:#dadee3;
+  --main-surface: #fcfffc;
+  --main-disabled: #dadee3;
 
   --main-danger: #ee204e;
   --main-warning: #ff7538;
@@ -47,8 +47,10 @@
   --easy-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
 }
 
-
 /* ===================== BASE ===================== */
+.app-title{
+  color:var(--easy-primary);
+}
 body {
   background-color: var(--easy-bg-light);
   color: var(--easy-text);
@@ -75,7 +77,6 @@ a:hover {
 .section-title {
   padding-bottom: 6px;
   margin-bottom: 20px;
-  border-bottom: 2px solid var(--easy-primary-accent-light);
 }
 
 h1,
@@ -145,8 +146,8 @@ h6 {
   border: 2px solid var(--easy-danger);
   border-radius: var(--easy-min-radius);
 }
-.btn-fixed-width{
-  width:103px;
+.btn-fixed-width {
+  width: 103px;
 }
 
 /* ===================== FORMS ===================== */
@@ -157,7 +158,8 @@ h6 {
   border: 1px solid var(--easy-primary);
   border-radius: var(--easy-min-radius);
 }
-form .form-group, form .form-floating {
+form .form-group,
+form .form-floating {
   margin-bottom: 0.8rem;
 }
 
@@ -185,7 +187,7 @@ textarea:focus,
   background-color: var(--easy-bg-light) !important;
   color: var(--easy-primary) !important;
   border-bottom: 3px solid var(--easy-border-strong);
-  border-top:none !important;
+  border-top: none !important;
 }
 
 .table thead td {
@@ -208,8 +210,8 @@ textarea:focus,
   border-bottom: 1px solid var(--easy-border-light);
 }
 
-.filter{
-  border:1px solid var(--easy-primary) !important;
+.filter {
+  border: 1px solid var(--easy-primary) !important;
   background-color: var(--easy-bg-surface);
 }
 /* ===================== LISTS ===================== */
@@ -248,12 +250,9 @@ ul.list-group,
   color: var(--easy-text);
 }
 
-
 .bg-secondary {
   background-color: var(--easy-primary-accent-dark) !important;
 }
-
-
 
 .border {
   border: 1px solid var(--easy-border-strong) !important;
@@ -301,7 +300,6 @@ hr {
   pointer-events: none;
 }
 
-
 .modal-backdrop.show {
   opacity: 0.6;
   background-color: #000;
@@ -313,7 +311,7 @@ hr {
   font-size: 1rem;
   font-weight: 600;
   background-color: var(--easy-bg-light);
-  font-weight:bold;
+  font-weight: bold;
   border: 1px solid var(--easy-primary-accent-darkdark-dark);
 }
 
@@ -350,13 +348,13 @@ hr {
   position: relative;
 }
 
-/* ===================== REQUEST / RESPONSE ===================== */
+/* ===================== DATATABLE ===================== */
 
 .scrollable-response {
   max-height: 400px;
   overflow-y: auto;
   overflow-x: auto;
-  padding: 0.5rem; /* ou ce que tu veux */
+  padding: 0.5rem;
   background: #f8f9fa;
   border: 1px solid #dee2e6;
   border-radius: var(--easy-radius, 0.375rem);
@@ -364,7 +362,7 @@ hr {
 
 .scrollable-response pre {
   margin: 0;
-  min-width: max-content;     /* force le <pre> à prendre la largeur de son contenu */
+  min-width: max-content;
 }
 
 .scrollable-table {
@@ -374,19 +372,18 @@ hr {
   border: 1px solid #dee2e6;
   border-radius: var(--easy-radius, 0.375rem);
   background: var(--easy-surface, #fff);
-
 }
 
 .resizable-table thead th {
   position: sticky;
-  background-color: var(--easy-bg-light); /* force fond opaque */
+  background-color: var(--easy-bg-light);
   z-index: 3;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1); /* ou border-bottom */
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
 }
 
 .resizable-table thead tr.filter-row td {
   position: sticky;
-  top: 38px; /* hauteur estimée du header au-dessus */
+  top: 38px;
   background: #f9f9f9;
   z-index: 1;
 }
@@ -410,19 +407,66 @@ input[name$="[url]"]:hover {
   transition: width 0.2s ease;
 }
 
-/* Comportement élargi au survol */
-.auto-grow {
-  transition: all 0.2s ease-in-out;
-  min-width: 100%;
-}
-.auto-grow:hover {
-  min-width: 110%;
-  z-index: 1;
-  position: relative;
+/* ===================== NAVBAR ===================== */
+.navbar-section {
+  background-color: var(--easy-surface);
+  border-left: 4px solid var(--easy-border);
+  border-radius: 0 var(--easy-radius) var(--easy-radius) 0;
+  padding: 1rem 1rem 0.5rem 1rem;
+  margin-bottom: 0.5rem;
 }
 
+.navbar-section > .section-title {
+  display: flex;
+  align-items: center;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--easy-primary);
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.05em;
+}
 
+.navbar-section > .section-title span.icon {
+  margin-right: 0.5rem;
+  font-size: 1rem;
+}
 
+.navbar-section .subsection-title {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--easy-text);
+  margin-top: 1rem;
+  margin-bottom: 0.25rem;
+  padding-left: 0.25rem;
+  opacity: 0.6;
+}
 
+.navbar-section .nav-link {
+  padding: 0.25rem 0.5rem 0.25rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--easy-text);
+  border-radius: var(--easy-radius);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
 
+.navbar-section .nav-link:hover {
+  background-color: var(--easy-soft);
+  color: var(--easy-primary);
+  font-weight: 500;
+}
 
+.navbar-section .nav-link.active {
+  background-color: var(--easy-soft);
+  font-weight: 600;
+  color: var(--easy-primary);
+}
+
+#sidebarPanel {
+  transform: translateX(-100%);
+}
+
+#sidebarPanel.sidebar-open {
+  transform: translateX(0);
+}

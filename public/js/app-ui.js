@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
-  /*** Bouton navbar tutoriel ***/
+  /*** Button navbar tutorial ***/
   document
     .getElementById("btn-launch-tutorial")
     ?.addEventListener("click", () => {
@@ -130,6 +130,29 @@ document.addEventListener("DOMContentLoaded", () => {
       row.style.display = match ? "" : "none";
     });
   };
+
+  /*** Sidebar toggle with a single button ***/
+  const sidebar = document.getElementById("sidebarPanel");
+  const toggleBtn = document.getElementById("toggleSidebar");
+
+  if (sidebar && toggleBtn) {
+    toggleBtn.addEventListener("click", () => {
+      const isOpen =
+        getComputedStyle(sidebar).transform === "matrix(1, 0, 0, 1, 0, 0)";
+      sidebar.style.transform = isOpen ? "translateX(-100%)" : "translateX(0)";
+    });
+
+    // Fermer si on clique en dehors (optionnel)
+    document.addEventListener("click", (e) => {
+      if (
+        !sidebar.contains(e.target) &&
+        !toggleBtn.contains(e.target) &&
+        getComputedStyle(sidebar).transform === "matrix(1, 0, 0, 1, 0, 0)"
+      ) {
+        sidebar.style.transform = "translateX(-100%)";
+      }
+    });
+  }
 });
 
 window.sortTable = function (tableId, columnIndex) {
@@ -145,4 +168,3 @@ window.sortTable = function (tableId, columnIndex) {
   const tbody = table.querySelector("tbody");
   sorted.forEach((row) => tbody.appendChild(row));
 };
-

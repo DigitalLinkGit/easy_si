@@ -3,3 +3,9 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+capture_controllers:
+    resource:
+        path: ../src/Capture/Controller/
+        namespace: App\Capture\Controller
+    type: attribute

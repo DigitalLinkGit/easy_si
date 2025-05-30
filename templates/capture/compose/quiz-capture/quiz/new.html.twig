@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer une questionnaire{% endblock %}
+
+{% block body %}
+    {% include 'partials/_page_header.html.twig' with {
+    route_return: 'app_quiz_index',
+    title: 'Créer une quiz'
+    } %}
+
+    {{ include('capture/compose/quiz-capture/quiz/_form.html.twig') }}
+
+
+{% endblock %}

@@ -24,8 +24,14 @@ doctrine:
                 dir: '%kernel.project_dir%/src/Entity'
                 prefix: 'App\Entity'
                 alias: App
+            Capture:
+                type: attribute
+                is_bundle: false 
+                dir: '%kernel.project_dir%/src/Capture/Entity'
+                prefix: 'App\Capture\Entity'
+                alias: Capture
         controller_resolver:
-            auto_mapping: false
+            auto_mapping: false          
 
 when@test:
     doctrine:

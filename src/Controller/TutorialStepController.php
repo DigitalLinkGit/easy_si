@@ -12,10 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/')]
+#[Route('/tutorial')]
 final class TutorialStepController extends AbstractController
 {
-    #[Route(name: 'app_tutorial_step_index', methods: ['GET'])]
+    #[Route('tutorial', name:'app_tutorial_step_index', methods: ['GET'])]
     public function index(TutorialStepRepository $tutorialStepRepository): Response
     {
         return $this->render('tutorial_step/index.html.twig', [
