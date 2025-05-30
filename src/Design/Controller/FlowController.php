@@ -82,7 +82,7 @@ final class FlowController extends AbstractController
             return $this->redirectToRoute('app_flow_edit', ['id' => $flow->getId()]);
         }
 
-        return $this->render('flow/edit.html.twig', [
+        return $this->render('design/flow/edit.html.twig', [
             'flow' => $flow,
             'form' => $form->createView(),
             'interactionForm' => $interactionForm->createView(),

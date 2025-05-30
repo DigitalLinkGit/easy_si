@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Capture\Entity;
-
+use App\Global\Entity\Role;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]

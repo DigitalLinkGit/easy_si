@@ -4,7 +4,10 @@
 {% endblock %}
 
 {% block body %}
-	<h1 class="mb-4">Modifier une Capture</h1>
+	{% include 'global/partials/_page_header.html.twig' with {
+    route_return: 'app_capture_index',
+    title: 'Capture :'
+    } %}
 
 	{{ include('capture/compose/capture/_form.html.twig') }}
 
@@ -41,7 +44,4 @@
 		{% endfor %}
 	</div>
 
-	<div class="mt-4">
-		<a href="{{ path('app_capture_index') }}" class="btn btn-outline-secondary btn-sm">Retour à la liste</a>
-	</div>
 {% endblock %}

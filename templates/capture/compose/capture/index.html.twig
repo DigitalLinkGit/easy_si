@@ -5,12 +5,12 @@
 
 {% block body %}
 <div class="container my-4">
-	{% include 'partials/_page_header.html.twig' with {
+	{% include 'global/partials/_page_header.html.twig' with {
     route_return: 'app_capture_index',
     title: 'Captures :'
     } %}
 
-	{% include 'components/table/_table.html.twig' with {
+	{% include 'global/components/table/_table.html.twig' with {
     items: captures,
     columns: ['name', 'description'],
     headers: ['Nom', 'Description'],

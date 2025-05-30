@@ -2,7 +2,7 @@
 
 namespace App\Capture\Entity;
 
-use Doctrine\DBAL\Types\Types;
+use App\Global\Entity\Role;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -109,11 +109,11 @@ class Capture
             $respondentRole = $element->getRespondentRole();
             $validatorRole = $element->getValidatorRole();
 
-            if ($respondentRole instanceof \App\Capture\Entity\Role) {
+            if ($respondentRole instanceof \App\Global\Entity\Role) {
                 $roles[$respondentRole->getId()] = $respondentRole;
             }
 
-            if ($validatorRole instanceof \App\Capture\Entity\Role) {
+            if ($validatorRole instanceof \App\Global\Entity\Role) {
                 $roles[$validatorRole->getId()] = $validatorRole;
             }
         }

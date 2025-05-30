@@ -4,7 +4,7 @@
 {% endblock %}
 
 {% block body %}
-	{% include 'partials/_page_header.html.twig' with {
+	{% include 'global/partials/_page_header.html.twig' with {
     route_return: 'app_quiz_index',
     title: 'Modifier une quiz'
     } %}
@@ -26,13 +26,13 @@
 
 		<div class="tab-content border border-top-0 p-4" id="quizTabsContent">
 			<div class="tab-pane fade show active" id="graph" role="tabpanel" aria-labelledby="graph-tab">
-				{% include 'components/graph/_graph.html.twig' with {
+				{% include 'global/components/graph/_graph.html.twig' with {
         graphData: graphData,
         height: 600
       } %}
 			</div>
 			<div class="tab-pane fade" id="questions" role="tabpanel" aria-labelledby="questions-tab">
-				{% include 'capture/compose/quiz-capture/quizquestions_vertical_cards.html.twig' %}
+				{% include 'capture/compose/quiz-capture/quiz/questions_vertical_cards.html.twig' %}
 			</div>
 		</div>
 	</div>

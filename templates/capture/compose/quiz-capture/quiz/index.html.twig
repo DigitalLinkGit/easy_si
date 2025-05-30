@@ -5,12 +5,12 @@
 
 {% block body %}
 <div class="container my-4">
-	{% include 'partials/_page_header.html.twig' with {
+	{% include 'global/partials/_page_header.html.twig' with {
     route_return: 'app_quiz_index',
     title: 'Questionnaires :'
     } %}
 
-	{% include 'components/table/_table.html.twig' with {
+	{% include 'global/components/table/_table.html.twig' with {
     items: quizzes,
     columns: ['name', 'description'],
     headers: ['Nom', 'Description'],

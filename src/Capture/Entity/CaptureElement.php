@@ -3,14 +3,11 @@
 namespace App\Capture\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-
+use App\Global\Entity\Role;
 #[ORM\Entity]
 #[ORM\Table(name: 'capture_element')]
 #[ORM\InheritanceType('JOINED')]
 #[ORM\DiscriminatorColumn(name: 'type', type: 'string')]
-/*#[ORM\DiscriminatorMap([
-    'quiz' => QuizCapture::class
-])]*/
 abstract class CaptureElement
 {
     #[ORM\Id]

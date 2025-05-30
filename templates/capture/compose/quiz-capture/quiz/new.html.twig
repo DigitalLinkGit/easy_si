@@ -3,9 +3,9 @@
 {% block title %}Créer une questionnaire{% endblock %}
 
 {% block body %}
-    {% include 'partials/_page_header.html.twig' with {
+    {% include 'global/partials/_page_header.html.twig' with {
     route_return: 'app_quiz_index',
-    title: 'Créer une quiz'
+    title: 'Créer un questionnaire'
     } %}
 
     {{ include('capture/compose/quiz-capture/quiz/_form.html.twig') }}
