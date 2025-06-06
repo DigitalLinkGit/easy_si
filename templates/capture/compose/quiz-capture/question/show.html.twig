@@ -21,7 +21,7 @@
 			</div>
             <p class="fw-bold">{{ question.content }}</p>
 			{% if question.proposals|length > 0 %}
-				{% if question.multipleChoice %}
+				{% if question.type === "MULTI_CHOICE" %}
 					{# Choix multiple #}
 					{% for proposal in question.proposals %}
 						<div class="form-check">
@@ -31,7 +31,7 @@
 							</label>
 						</div>
 					{% endfor %}
-				{% else %}
+				{% if question.type === "SINGLE_CHOICE"  %}
 					{# Choix unique #}
 					{% for proposal in question.proposals %}
 						<div class="form-check">

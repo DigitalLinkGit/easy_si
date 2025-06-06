@@ -5,6 +5,7 @@ namespace App\Capture\Entity;
 use App\Capture\Repository\QuestionInstanceRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuestionInstanceRepository::class)]
@@ -29,11 +30,9 @@ class QuestionInstance
     #[ORM\OneToMany(mappedBy: 'questionInstance', targetEntity: Condition::class, cascade: ['persist', 'remove'], orphanRemoval: true, fetch: 'EAGER')]
     private Collection $conditions;
 
-
     #[ORM\ManyToOne(inversedBy: 'instances')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Question $question = null;
-
 
     #[ORM\ManyToOne(inversedBy: 'questionsInstances')]
     #[ORM\JoinColumn(onDelete: 'CASCADE')]
@@ -41,6 +40,15 @@ class QuestionInstance
 
     #[ORM\Column]
     private ?int $level = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $renderTemplate = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $renderTitleLevel = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $renderTitle = null;
 
     public function __construct()
     {
@@ -61,7 +69,6 @@ class QuestionInstance
     public function setPreviousQuestionInstance(?self $previousQuestionInstance): static
     {
         $this->previousQuestionInstance = $previousQuestionInstance;
-
         return $this;
     }
 
@@ -73,9 +80,9 @@ class QuestionInstance
     public function setNextQuestionInstance(?self $nextQuestionInstance): static
     {
         $this->nextQuestionInstance = $nextQuestionInstance;
-
         return $this;
     }
+
     public function removeNextQuestionInstance()
     {
         $this->nextQuestionInstance = null;
@@ -102,7 +109,6 @@ class QuestionInstance
     public function removeCondition(Condition $condition): static
     {
         if ($this->conditions->removeElement($condition)) {
-            // set the owning side to null (unless already changed)
             if ($condition->getQuestionInstance() === $this) {
                 $condition->setQuestionInstance(null);
             }
@@ -119,7 +125,6 @@ class QuestionInstance
     public function setQuestion(?Question $question): static
     {
         $this->question = $question;
-
         return $this;
     }
 
@@ -131,7 +136,6 @@ class QuestionInstance
     public function setQuiz(?QuizCapture $quiz): static
     {
         $this->quiz = $quiz;
-
         return $this;
     }
 
@@ -143,9 +147,9 @@ class QuestionInstance
     public function setLevel(int $level): static
     {
         $this->level = $level;
-
         return $this;
     }
+
     public function getConditionByProposalId(int $proposalId): ?Condition
     {
         foreach ($this->getConditions() as $condition) {
@@ -161,17 +165,66 @@ class QuestionInstance
     {
         return $repo->countByLevel($this->getLevel(), $this->getQuiz()->getId());
     }
+
     public function getNumberOfConditionableAtSameLevel(QuestionInstanceRepository $repo): int
     {
         return $repo->countProposalsForSingleChoiceAtLevelInQuiz($this->getLevel(), $this->getQuiz()->getId());
     }
+
     public function removeConditionByProposalId(int $proposalId): void
     {
         foreach ($this->conditions as $key => $condition) {
             if ($condition->getProposalId() === $proposalId) {
                 $this->conditions->remove($key);
-                $condition->setQuestionInstance(null); // si relation bidirectionnelle
+                $condition->setQuestionInstance(null);
             }
         }
+    }
+
+    public function getRenderTemplate(): ?string
+    {
+        return $this->renderTemplate;
+    }
+
+    public function setRenderTemplate(?string $renderTemplate): self
+    {
+        $this->renderTemplate = $renderTemplate;
+        return $this;
+    }
+
+    public function render(array $context = []): string
+    {
+        if (empty($this->renderTemplate)) {
+            return '';
+        }
+
+        $template = $this->renderTemplate;
+
+        foreach ($context as $key => $value) {
+            $template = str_replace("[$key]", $value, $template);
+        }
+        return $template;
+    }
+
+    public function getRenderTitle(): ?string
+    {
+        return $this->renderTitle;
+    }
+
+    public function setRenderTitle(?string $renderTitle): self
+    {
+        $this->renderTitle = $renderTitle;
+        return $this;
+    }
+
+    public function getRenderTitleLevel(): ?string
+    {
+        return $this->renderTitleLevel;
+    }
+
+    public function setRenderTitleLevel(?string $renderTitleLevel): self
+    {
+        $this->renderTitleLevel = $renderTitleLevel;
+        return $this;
     }
 }

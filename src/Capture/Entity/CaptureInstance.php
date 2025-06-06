@@ -127,4 +127,12 @@ class CaptureInstance
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, CaptureElementInstance>
+     */
+    public function getCaptureElementInstance(): Collection
+    {
+        return $this->captureElementInstance;
+    }
 }

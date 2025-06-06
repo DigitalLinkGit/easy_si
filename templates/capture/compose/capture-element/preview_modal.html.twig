@@ -1,0 +1,21 @@
+{{ form_start(previewForm, { action: '', method: 'POST' }) }}
+
+<div class="mb-3">
+  {{ form_row(previewForm.renderTitle) }}
+</div>
+
+<div class="mb-3">
+  {{ form_row(previewForm.renderTitleLevel) }}
+</div>
+
+<div class="border p-3 rounded bg-light">
+  <pre class="mb-0">{{ rendered }}</pre>
+</div>
+
+
+<div class="modal-footer">
+  <button type="submit" class="btn btn-primary">Enregistrer</button>
+  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+</div>
+
+{{ form_end(previewForm) }}

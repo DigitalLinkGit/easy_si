@@ -15,6 +15,13 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/capture')]
 final class CaptureController extends AbstractController
 {
+    private CaptureElementRepository $captureElementRepository;
+
+    public function __construct(CaptureElementRepository $captureElementRepository)
+    {
+        $this->captureElementRepository = $captureElementRepository;
+    }
+
     #[Route(name: 'app_capture_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -66,10 +73,11 @@ final class CaptureController extends AbstractController
 
             return $this->redirectToRoute('app_capture_index', [], Response::HTTP_SEE_OTHER);
         }
-
+        $availableElements = $this->captureElementRepository->findAll();
         return $this->render('capture/compose/capture/edit.html.twig', [
             'capture' => $capture,
             'form' => $form,
+            'availableElements' => $availableElements,
         ]);
     }
 
@@ -98,8 +106,9 @@ final class CaptureController extends AbstractController
         return $this->redirectToRoute('app_capture_edit', ['id' => $capture->getId()]);
     }
 
-    #[Route('/capture/compose/capture/{id}/delete-element/{elementId}', name: 'app_capture_delete_element', methods: ['GET'])]
-    public function deleteElement(Capture $capture,int $elementId,CaptureElementRepository $elementRepo,EntityManagerInterface $em): Response {
+    #[Route('/{id}/delete-element/{elementId}', name: 'app_capture_delete_element', methods: ['GET'])]
+    public function deleteElement(Capture $capture, int $elementId, CaptureElementRepository $elementRepo, EntityManagerInterface $em): Response
+    {
         $element = $elementRepo->find($elementId);
         if (!$element) {
             throw $this->createNotFoundException('CaptureElement introuvable');
@@ -109,5 +118,13 @@ final class CaptureController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('app_capture_edit', ['id' => $capture->getId()]);
+    }
+
+    #[Route('/{id}/preview', name: 'app_capture_preview', methods: ['GET'])]
+    public function preview(Capture $capture): Response
+    {
+        return $this->render('capture/compose/capture/preview.html.twig', [
+            'capture' => $capture,
+        ]);
     }
 }

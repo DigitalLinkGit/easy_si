@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulaire de capture{% endblock %}
+
+{% block body %}
+    {% include 'global/partials/_page_header.html.twig' with {
+        title: 'Formulaire de capture'
+        } %}
+
+    {{ include('capture/compose/form_capture/_form.html.twig') }}
+
+    <a href="{{ path('app_form_capture_index') }}">back to list</a>
+{% endblock %}

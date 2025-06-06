@@ -1,0 +1,205 @@
+{% set fieldTypes = {
+    'text': 'Texte court',
+    'textarea': 'Texte long',
+    'email': 'Email',
+    'number': 'Nombre',
+    'date': 'Date',
+	'select': 'Liste',
+} %}
+
+{{ form_start(form) }}
+<div class="mb-3">
+	{{ form_row(form.name) }}
+</div>
+<div class="mb-3">
+	{{ form_row(form.description) }}
+</div>
+
+<div class="d-flex justify-content-between mb-3">
+	{% if form_capture is defined and form_capture.id is not null %}
+		<a href="{{ path('capture_element_edit_render', { id: form_capture.id }) }}" class="btn btn-outline-primary mt-4">
+			Éditer le rendu
+		</a>
+	{% endif %}
+	{{ include('global/components/button/_btn_save.html.twig') }}
+</div>
+<h5>Éditeur de formulaire</h5>
+<div
+	id="builder-container">
+
+	<!-- Éditeur -->
+	<div id="form-editor">
+
+		<div id="formFields-wrapper" data-prototype="{{ form_widget(form.fields.vars.prototype)|e('html_attr') }}">
+			{% for fieldForm in form.fields %}
+				<div class="form-field-entry d-flex align-items-center gap-2">
+					{{ form_widget(fieldForm.children.label) }}
+					{{ form_widget(fieldForm.children.name) }}
+					<span class="badge bg-secondary me-2">
+						{{ fieldTypes[fieldForm.children.type.vars.value] ?? fieldForm.children.type.vars.value }}
+					</span>
+					<button type="button" class="btn btn-sm btn-outline-danger remove-field ms-2" title="Supprimer">×</button>
+					{{ form_widget(fieldForm.children.type) }}
+					{{ form_widget(fieldForm.children.position) }}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+
+	<!-- Palette -->
+	<div id="field-palette">
+		<h5>Champs disponibles</h5>
+		{% for key, label in fieldTypes %}
+			<div class="draggable-field" draggable="true" data-type="{{ key }}">
+				{{ label }}
+			</div>
+		{% endfor %}
+	</div>
+	
+</div>
+
+
+{{ form_end(form) }}
+
+
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+const wrapper = document.getElementById('formFields-wrapper');
+const editor = document.getElementById('form-editor');
+const palette = document.querySelectorAll('.draggable-field');
+
+const typeLabels = {
+text: 'Texte court',
+textarea: 'Texte long',
+select: 'Liste',
+email: 'Email',
+number: 'Nombre',
+date: 'Date'
+};
+
+let index = wrapper.querySelectorAll('.form-field-entry').length;
+
+// DRAG START
+palette.forEach(item => {
+item.addEventListener('dragstart', e => {
+e.dataTransfer.setData('type', item.dataset.type);
+});
+});
+
+// ENABLE DROP
+editor.addEventListener('dragover', e => e.preventDefault());
+
+editor.addEventListener('drop', e => {
+e.preventDefault();
+const type = e.dataTransfer.getData('type');
+addField(type);
+});
+
+function addField(type) {
+	const prototype = wrapper.dataset.prototype;
+	const newForm = prototype.replace(/__name__/g, index);
+	index++;
+
+	const tempDiv = document.createElement('div');
+	tempDiv.innerHTML = newForm;
+	const base = tempDiv.firstElementChild;
+	if (! base) 
+	return;
+
+
+
+	const labelInput = base.querySelector('[name$="[label]"]');
+	const nameInput = base.querySelector('[name$="[name]"]');
+	const typeInput = base.querySelector('[name$="[type]"]');
+	const posInput = base.querySelector('[name$="[position]"]');
+
+	if (typeInput) 
+	typeInput.value = type;
+
+
+	if (posInput) 
+	posInput.value = index;
+
+
+
+	const wrapperEntry = document.createElement('div');
+	wrapperEntry.className = 'form-field-entry d-flex align-items-center gap-2';
+
+	wrapperEntry.appendChild(labelInput);
+	wrapperEntry.appendChild(nameInput);
+
+	const badge = document.createElement('span');
+	badge.className = 'badge bg-secondary me-2';
+	badge.innerText = typeLabels[type] || type;
+	wrapperEntry.appendChild(badge);
+
+	const removeBtn = document.createElement('button');
+	removeBtn.type = 'button';
+	removeBtn.className = 'btn btn-sm btn-outline-danger ms-2 remove-field';
+	removeBtn.innerText = '×';
+	removeBtn.addEventListener('click', () => wrapperEntry.remove());
+	wrapperEntry.appendChild(removeBtn);
+
+	wrapperEntry.appendChild(typeInput);
+	wrapperEntry.appendChild(posInput);
+
+	wrapper.appendChild(wrapperEntry);
+}
+
+
+// Suppression pour les champs existants déjà rendus
+document.querySelectorAll('.remove-field').forEach(btn => {
+btn.addEventListener('click', () => {
+btn.closest('.form-field-entry').remove();
+});
+});
+});
+</script>
+
+
+<style>
+	#builder-container {
+		display: flex;
+		gap: 40px;
+		margin-top: 30px;
+	}
+	#form-editor {
+		flex: 1;
+		min-height: 400px;
+		background: #f8f9fa;
+		padding: 20px;
+		border: 2px dashed #ccc;
+		border-radius: 8px;
+	}
+	#field-palette {
+		width: 280px;
+		background: #ffffff;
+		border: 1px solid #ccc;
+		padding: 15px;
+		border-radius: 8px;
+	}
+	.draggable-field {
+		padding: 6px 12px;
+		margin-bottom: 10px;
+		background: #eaf6fa;
+		border: 1px solid #2395b2;
+		border-radius: 4px;
+		cursor: grab;
+	}
+
+	.form-field-entry {
+		display: flex;
+		align-items: center;
+		padding: 8px 12px;
+		margin-bottom: 10px;
+		background: #ffffff;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+	}
+
+	.form-field-entry .badge {
+		width: 200px;
+		text-align: center;
+		white-space: nowrap;
+	}
+</style>

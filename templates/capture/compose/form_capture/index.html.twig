@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Form Capture
+{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+	{% include 'global/partials/_page_header.html.twig' with {
+    title: 'Formulaire de capture :'
+    } %}
+
+	{% include 'global/components/table/_table.html.twig' with {
+    items: form_captures,
+    columns: ['name', 'description'],
+    headers: ['Nom', 'Description'],
+    filter:true,
+    sort:true,
+    show:false,
+    edit:true,
+    delete:true,
+    add:true,
+    base_route: 'app_form_capture'
+    } %}
+</div>
+{% endblock %}

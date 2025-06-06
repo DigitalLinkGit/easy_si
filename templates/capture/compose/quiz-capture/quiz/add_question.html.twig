@@ -40,13 +40,7 @@
                                 {{ question.category ? question.category.name : 'Sans catégorie' }}
                             </span>
                             <span class="badge bg-light border text-dark text-uppercase small">
-                                {% if question.proposals|length == 0 %}
-                                    Ouverte
-                                {% elseif question.multipleChoice %}
-                                    Choix multiple
-                                {% else %}
-                                    Choix unique
-                                {% endif %}
+                               {{ question.type.value }}
                             </span>
                         </div>
                         <p class="card-text small text-muted" style="font-size: 0.9rem;">

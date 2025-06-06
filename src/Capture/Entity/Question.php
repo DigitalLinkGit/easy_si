@@ -5,6 +5,7 @@ namespace App\Capture\Entity;
 use App\Capture\Repository\QuestionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Capture\Enum\AnswerType;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
@@ -21,8 +22,8 @@ class Question
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
-    #[ORM\Column]
-    private ?bool $multipleChoice = null;
+    #[ORM\Column(type: 'string', enumType: AnswerType::class)]
+    private AnswerType $type = AnswerType::TEXT;
 
     /**
      * @var Collection<int, Proposal>
@@ -74,19 +75,6 @@ class Question
 
         return $this;
     }
-
-    public function isMultipleChoice(): ?bool
-    {
-        return $this->multipleChoice;
-    }
-
-    public function setMultipleChoice(bool $multipleChoice): static
-    {
-        $this->multipleChoice = $multipleChoice;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Proposal>
      */
@@ -128,18 +116,6 @@ class Question
 
         return $this;
     }
-    public function getAnswerType()
-    {
-        if ($this->getProposals()->count() == 0) {
-            return 'Ouverte';
-        } else {
-            if ($this->multipleChoice) {
-                return 'Choix multiple';
-            } else {
-                return 'Choix unique';
-            }
-        }
-    }
 
     public function addInstance(QuestionInstance $instance): static
     {
@@ -160,6 +136,16 @@ class Question
             }
         }
 
+        return $this;
+    }
+    public function getType(): AnswerType
+    {
+        return $this->type;
+    }
+
+    public function setType(AnswerType $type): self
+    {
+        $this->type = $type;
         return $this;
     }
 }

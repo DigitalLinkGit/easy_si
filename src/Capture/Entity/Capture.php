@@ -3,6 +3,7 @@
 namespace App\Capture\Entity;
 
 use App\Global\Entity\Role;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -27,6 +28,9 @@ class Capture
 
     #[ORM\ManyToMany(targetEntity: Role::class)]
     private Collection $requiredRoles;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $renderTitle = null;
 
     public function __construct()
     {
@@ -119,5 +123,30 @@ class Capture
         }
 
         return array_values($roles);
+    }
+
+    /**
+     * @return Collection<int, Role>
+     */
+    public function getRequiredRoles(): Collection
+    {
+        return $this->requiredRoles;
+    }
+
+    public function removeRequiredRole(Role $requiredRole): static
+    {
+        $this->requiredRoles->removeElement($requiredRole);
+
+        return $this;
+    }
+    public function getRenderTitle(): ?string
+    {
+        return $this->renderTitle;
+    }
+
+    public function setRenderTitle(?string $renderTitle): self
+    {
+        $this->renderTitle = $renderTitle;
+        return $this;
     }
 }

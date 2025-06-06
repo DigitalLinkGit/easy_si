@@ -1,37 +1,32 @@
 {{ form_start(form) }}
 
-<div class="d-flex gap-4">
-  <div class="flex-grow-1">
-    {{ form_row(form.name, {
+<div class="row">
+	<div class="col-md-4">
+		{{ form_row(form.name, {
         label_attr: { class: 'form-label fw-semibold' },
         attr: { class: 'form-control' }
     }) }}
-  </div>
+	</div>
+	<div class="col-md-4">
+		{{ form_row(form.respondentRole, {
+        label_attr: { class: 'form-label fw-semibold' },
+        attr: { class: 'form-select' }
+    }) }}
+	</div>
+	<div class="col-md-4">
+		{{ form_row(form.validatorRole, {
+        label_attr: { class: 'form-label fw-semibold' },
+        attr: { class: 'form-select' }
+    }) }}
+	</div>
 </div>
-
 {{ form_row(form.description, {
     label_attr: { class: 'form-label fw-semibold' },
     attr: { class: 'form-control', rows: 3 }
 }) }}
 
-<div class="row">
-  <div class="col-md-6">
-    {{ form_row(form.respondentRole, {
-        label_attr: { class: 'form-label fw-semibold' },
-        attr: { class: 'form-select' }
-    }) }}
-  </div>
-  <div class="col-md-6">
-    {{ form_row(form.validatorRole, {
-        label_attr: { class: 'form-label fw-semibold' },
-        attr: { class: 'form-select' }
-    }) }}
-  </div>
-</div>
-
 <div class="d-flex justify-content-end gap-2 mt-4">
-  <a href="{{ path('app_quiz_index') }}" class="btn btn-outline-primary">Retour</a>
-  <button type="submit" class="btn btn-primary">Enregistrer</button>
+	<button type="submit" class="btn btn-primary">Enregistrer</button>
 </div>
 
 {{ form_end(form) }}

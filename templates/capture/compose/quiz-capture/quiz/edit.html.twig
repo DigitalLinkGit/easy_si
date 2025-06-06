@@ -10,6 +10,10 @@
     } %}
 
 	{{ include('capture/compose/quiz-capture/quiz/_form.html.twig') }}
+	<a href="{{ path('app_capture_element_preview', { id: quiz.id }) }}" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#previewModal{{ quiz.id }}">
+		Prévisualiser
+	</a>
+
 	<div class="mt-4">
 		<ul class="nav nav-tabs" id="quizTabs" role="tablist">
 			<li class="nav-item" role="presentation">
@@ -36,5 +40,26 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="modal fade" id="previewModal{{ quiz.id }}" tabindex="-1" aria-labelledby="previewModalLabel{{ quiz.id }}" aria-hidden="true">
+		<div class="modal-dialog modal-lg modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="previewModalLabel{{ quiz.id }}">Prévisualisation :
+						{{ quiz.name }}</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+				</div>
+				<div class="modal-body p-4">
+					<div class="modal-body p-4">
+						{{ include('capture/compose/capture-element/preview_modal.html.twig', {
+							element: quiz,
+							rendered: quiz.render([])
+						}) }}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
 
 {% endblock %}

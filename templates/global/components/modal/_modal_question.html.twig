@@ -20,7 +20,7 @@
                   {% set condition = instance.conditions|filter(c => c.proposalId == proposal.id)|first %}
                   {% if condition %}
                     →
-                    <a href="{{ path('app_section_unlink_question', { sectionId: instance.section.id, instanceId: instance.id, proposalId: proposal.id }) }}"
+                    <a href="{{ path('app_quiz_unlink_question', { quizId: instance.quiz.id, instanceId: instance.id, proposalId: proposal.id }) }}"
                        class="text-danger me-1 fs-5" title="Supprimer la suite conditionnelle">
                       <i class="bi bi-x-circle"></i>
                     </a>
@@ -29,7 +29,7 @@
                     {% endif %}
                   {% else %}
                     {% if instance.nextQuestionInstance is null %}
-                      <a href="{{ path('app_section_add_question', { sectionId: instance.section.id, previousInstanceId: instance.id, proposalId: proposal.id }) }}" class="btn btn-sm btn-outline-primary">
+                      <a href="{{ path('app_quiz_add_question', { quizId: instance.quiz.id, previousInstanceId: instance.id, proposalId: proposal.id }) }}" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-arrow-down-circle"></i>
                         Conditionner
                       </a>
@@ -46,13 +46,13 @@
 
       {% if instance.conditions|length == 0 and instance.nextQuestionInstance is not null %}
         →
-        <a href="{{ path('app_section_unlink_question', { sectionId: instance.section.id, instanceId: instance.id }) }}"
+        <a href="{{ path('app_quiz_unlink_question', { quizId: instance.quiz.id, instanceId: instance.id }) }}"
            class="text-danger me-1 fs-5" title="Supprimer la suite par défaut">
           <i class="bi bi-x-circle"></i>
         </a>
         <span class="fs-5">{{ instance.nextQuestionInstance.question.name }}</span>
       {% elseif instance.conditions|length == 0 and instance.nextQuestionInstance is null %}
-        <a href="{{ path('app_section_add_question', { sectionId: instance.section.id, previousInstanceId: instance.id }) }}" class="btn btn-sm btn-outline-primary">
+        <a href="{{ path('app_quiz_add_question', { quizId: instance.quiz.id, previousInstanceId: instance.id }) }}" class="btn btn-sm btn-outline-primary">
           <i class="bi bi-arrow-down-circle"></i>
           Ajouter une question suivante
         </a>

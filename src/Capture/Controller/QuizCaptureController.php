@@ -6,6 +6,7 @@ use App\Capture\Entity\QuizCapture;
 use App\Capture\Entity\QuestionInstance;
 use App\Capture\Entity\Condition;
 use App\Capture\Form\QuizCaptureType;
+use App\Capture\Form\PreviewType;
 use App\Capture\Repository\QuizCaptureRepository;
 use App\Capture\Repository\QuestionRepository;
 use App\Capture\Repository\ProposalRepository;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Capture\Service\GraphBuilder;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 
 #[Route('/quiz')]
 final class QuizCaptureController extends AbstractController
@@ -91,12 +93,14 @@ final class QuizCaptureController extends AbstractController
         $sorted = iterator_to_array($instances);
         usort($sorted, fn($a, $b) => $a->getId() <=> $b->getId());
 
+        $previewForm = $this->createForm(PreviewType::class, $quiz);
 
         return $this->render('capture/compose/quiz-capture/quiz/edit.html.twig', [
             'quiz' => $quiz,
             'form' => $form->createView(),
             'graphData' => $graphData,
             'instances' => $instances,
+            'previewForm' => $previewForm->createView(),
         ]);
     }
 
@@ -112,14 +116,8 @@ final class QuizCaptureController extends AbstractController
     }
 
     #[Route('/{quizId}/add-question', name: 'app_quiz_add_question')]
-    public function addQuestion(
-        Request $request,
-        int $quizId,
-        EntityManagerInterface $em,
-        QuizCaptureRepository $quizRepo,
-        QuestionRepository $questionRepo,
-        CategoryRepository $categoryRepo
-    ): Response {
+    public function addQuestion(Request $request, int $quizId, EntityManagerInterface $em, QuizCaptureRepository $quizRepo, QuestionRepository $questionRepo, CategoryRepository $categoryRepo): Response
+    {
         $quiz = $quizRepo->find($quizId);
         if (!$quiz) {
             throw $this->createNotFoundException('quiz non trouvé');
@@ -165,15 +163,8 @@ final class QuizCaptureController extends AbstractController
     }
 
     #[Route('/{quizId}/attach-question', name: 'app_quiz_attach_question_instance')]
-    public function attachQuestionInstance(
-        int $quizId,
-        Request $request,
-        EntityManagerInterface $em,
-        QuizCaptureRepository $quizRepo,
-        QuestionRepository $questionRepo,
-        QuestionInstanceRepository $instanceRepo,
-        ProposalRepository $proposalRepo
-    ): Response {
+    public function linkQuestion(int $quizId, Request $request, EntityManagerInterface $em, QuizCaptureRepository $quizRepo, QuestionRepository $questionRepo, QuestionInstanceRepository $instanceRepo, ProposalRepository $proposalRepo): Response
+    {
         $quiz = $quizRepo->find($quizId);
         if (!$quiz) {
             throw $this->createNotFoundException('quiz introuvable.');
@@ -246,7 +237,7 @@ final class QuizCaptureController extends AbstractController
             throw $this->createNotFoundException('QuestionInstance introuvable');
         }
 
-        return $this->render('components/modal/_modal_question.html.twig', [
+        return $this->render('global/components/modal/_modal_question.html.twig', [
             'instance' => $instance,
         ]);
     }
@@ -265,12 +256,57 @@ final class QuizCaptureController extends AbstractController
             $instance->removeNextQuestionInstance();
         }
 
+        $quiz = $instance->getQuiz();
+        $quiz->removeQuestionInstance($instance);
+        $em->remove($instance);
         $em->flush();
 
         return $this->redirectToRoute('app_quiz_edit', [
             'id' => $instance->getQuiz()->getId(),
         ]);
     }
+
+    #[Route('/question/{instanceId}/render', name: 'app_quiz_render_question', methods: ['GET', 'POST'])]
+    public function renderQuestionInstance(
+        int $instanceId,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+        $instance = $em->getRepository(QuestionInstance::class)->find($instanceId);
+
+        if (!$instance) {
+            throw $this->createNotFoundException("QuestionInstance #$instanceId introuvable.");
+        }
+
+        $form = $this->createFormBuilder($instance)
+            ->add('renderTemplate', TextareaType::class, [
+                'label' => 'Texte de rendu avec variables',
+                'attr' => ['class' => 'form-control', 'rows' => 10],
+            ])
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $template = $form->get('renderTemplate')->getData() ?? '';
+            $template = $template . "\n";
+            $instance->setRenderTemplate($template);
+
+            $em->flush();
+
+            $this->addFlash('success', 'Modèle de rendu enregistré.');
+            return $this->redirectToRoute('app_quiz_render_question', ['instanceId' => $instanceId]);
+        }
+
+        return $this->render('capture/compose/quiz-capture/quiz/render_instance.html.twig', [
+            'instance' => $instance,
+            'question' => $instance->getQuestion(),
+            'quiz' => $instance->getQuiz(),
+            'form' => $form->createView(),
+        ]);
+    }
+
+
     /* TEST TUTO
     #[Route('/new', name: 'app_quiz_new', methods: ['GET', 'POST'])]
     public function new(Request $request, QuestionInstanceRepository $qiRepo, GraphBuilder $graphBuilder, EntityManagerInterface $em, TutorialRepository $tutorialRepository): Response

@@ -151,6 +151,19 @@ h6 {
 }
 
 /* ===================== FORMS ===================== */
+.form-container{
+  background-color: var(--easy-bg-surface)!important;
+  border: 1px solid var(--easy-primary);
+  border-radius: var(--easy-max-radius);
+}
+
+.form-block {
+  background-color: var(--easy-bg-light)!important;
+  border-radius: var(--easy-min-radius);
+}
+
+
+
 .form-control,
 .form-select,
 .form-check-input {

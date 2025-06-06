@@ -17,7 +17,7 @@ final class RoleController extends AbstractController
     #[Route(name: 'app_role_index', methods: ['GET'])]
     public function index(RoleRepository $roleRepository): Response
     {
-        return $this->render('role/index.html.twig', [
+        return $this->render('global/role/index.html.twig', [
             'roles' => $roleRepository->findAll(),
         ]);
     }
@@ -36,7 +36,7 @@ final class RoleController extends AbstractController
             return $this->redirectToRoute('app_role_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('role/new.html.twig', [
+        return $this->render('global/role/new.html.twig', [
             'role' => $role,
             'form' => $form,
         ]);
@@ -49,7 +49,7 @@ final class RoleController extends AbstractController
             'disabled' => true,
         ]);
 
-        return $this->render('role/show.html.twig', [
+        return $this->render('global/role/show.html.twig', [
             'role' => $role,
             'form' => $form->createView(),
         ]);
@@ -68,7 +68,7 @@ final class RoleController extends AbstractController
             return $this->redirectToRoute('app_role_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('role/edit.html.twig', [
+        return $this->render('global/role/edit.html.twig', [
             'role' => $role,
             'form' => $form,
         ]);

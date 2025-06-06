@@ -2,66 +2,124 @@
 {{ form_start(form, { attr: { class: 'needs-validation' } }) }}
 <fieldset {{ disabled ? 'disabled' }}>
 
-<div class="d-flex gap-4">
-  <div class="flex-grow-1">
-    {{ form_row(form.name, {
+	<div class="d-flex gap-4">
+		<div class="flex-grow-1">
+			{{ form_row(form.name, {
         label_attr: { class: 'form-label fw-semibold' },
         attr: { class: 'form-control' }
     }) }}
-  </div>
-  <div style="min-width: 200px;">
-    {{ form_row(form.answerType, {
+		</div>
+
+		<div style="min-width: 200px;">
+			{{ form_row(form.type, {
+        label_attr: { class: 'form-label fw-semibold' },
+        attr: { class: 'form-select', id: 'question_type' }
+    }) }}
+		</div>
+
+		<div style="min-width: 200px;">
+			{{ form_row(form.category, {
         label_attr: { class: 'form-label fw-semibold' },
         attr: { class: 'form-select' }
     }) }}
-  </div>
-  <div style="min-width: 200px;">
-    {{ form_row(form.category, {
-        label_attr: { class: 'form-label fw-semibold' },
-        attr: { class: 'form-select' }
-    }) }}
-  </div>
-</div>
+		</div>
+	</div>
 
-
-<div class="mb-3">
-	{{ form_row(form.content, {
-            label_attr: { class: 'form-label fw-semibold' },
-            attr: { class: 'form-control', rows: 3 }
-        }) }}
-</div>
-
-
-<div id="proposed-block" style="display: none;">
 	<div class="mb-3">
-		{{ form_row(form.multipleChoice, {
-                label_attr: { class: 'form-check-label' },
-                row_attr: { class: 'form-check' },
-                attr: { class: 'form-check-input' }
-            }) }}
+		{{ form_row(form.content, {
+      label_attr: { class: 'form-label fw-semibold' },
+      attr: { class: 'form-control', rows: 3 }
+  }) }}
+	</div>
+  <h5>Réponse :</h5>
+	<div id="proposed-block" style="display: none;">
+		<div data-collection-holder data-prototype="{{ form_widget(form.proposals.vars.prototype)|e('html_attr') }}">
+			{% for proposal in form.proposals %}
+				<div class="proposal-item mb-2 d-flex align-items-center gap-3">
+					<div class="flex-grow-1">
+						{{ form_widget(proposal.content, { attr: { class: 'form-control' } }) }}
+					</div>
+					<button type="button" class="btn btn-outline-danger btn-sm remove-proposal btn-icon" title="Supprimer">
+						<i class="bi bi-trash"></i>
+					</button>
+				</div>
+			{% endfor %}
+			<button type="button" data-add-proposal class="btn btn-outline-primary mt-2">
+				<i class="bi bi-plus"></i>
+				Ajouter une proposition
+			</button>
+		</div>
 	</div>
 
-	<div data-collection-holder data-prototype="{{ form_widget(form.proposals.vars.prototype)|e('html_attr') }}">
-		{% for proposal in form.proposals %}
-			<div class="proposal-item mb-2 d-flex align-items-center gap-3">
-				<div class="flex-grow-1">
-					{{ form_widget(proposal.content, { attr: { class: 'form-control' } }) }}
-				</div>
-				<button type="button" class="btn btn-outline-danger btn-sm remove-proposal btn-icon" title="Supprimer">
-					<i class="bi bi-trash"></i>
-				</button>
-			</div>
-		{% endfor %}
-		<button type="button" data-add-proposal class="btn btn-outline-primary mt-2">
-			<i class="bi bi-plus"></i>
-			Ajouter une proposition
-		</button>
+
+  <!--answer type exemples-->
+	<div id="text-block" style="display: none;">
+		<input type="textarea" class="form-control mb-3" placeholder="Texte libre">
 	</div>
-</div>
+
+	<div id="number-block" style="display: none;">
+		<input type="number" class="form-control mb-3 w-auto" placeholder="Valeur numérique">
+	</div>
+
+	<div id="date-block" style="display: none;">
+		<input type="date" class="form-control mb-3 w-auto">
+	</div>
+
+	<div id="boolean-block" style="display: none;">
+		<div class="form-check mb-3">
+			<input type="checkbox" class="form-check-input" id="boolean-check">
+			<label class="form-check-label" for="boolean-check">Oui / Non</label>
+		</div>
+	</div>
+
 
 </fieldset>
 
-{% if not disabled %}
-    {{ include('components/button/_btn_save.html.twig') }}
-{% endif %}
+  {% if not disabled %}
+    {{ include('global/components/button/_btn_save.html.twig') }}
+  {% endif %}
 {{ form_end(form) }}
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const typeField = document.querySelector('#question_type');
+  const proposedBlock = document.querySelector('#proposed-block');
+  const textBlock = document.querySelector('#text-block');
+  const numberBlock = document.querySelector('#number-block');
+  const dateBlock = document.querySelector('#date-block');
+  const booleanBlock = document.querySelector('#boolean-block');
+
+  function toggleBlocks() {
+  const selected = typeField?.value;
+
+  [proposedBlock, textBlock, numberBlock, dateBlock, booleanBlock].forEach(block => {
+    if (block) block.style.display = 'none';
+  });
+
+  switch (selected) {
+    case 'single_choice':
+    case 'multi_choice':
+      if (proposedBlock) proposedBlock.style.display = '';
+      break;
+    case 'text':
+      if (textBlock) textBlock.style.display = '';
+      break;
+    case 'number':
+      if (numberBlock) numberBlock.style.display = '';
+      break;
+    case 'date':
+      if (dateBlock) dateBlock.style.display = '';
+      break;
+    case 'boolean':
+      if (booleanBlock) booleanBlock.style.display = '';
+      break;
+  }
+}
+
+
+  if (typeField) {
+    toggleBlocks();
+    typeField.addEventListener('change', toggleBlocks);
+  }
+});
+</script>

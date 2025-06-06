@@ -5,6 +5,7 @@ namespace App\Capture\Entity;
 use App\Capture\Repository\QuizCaptureRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Capture\Interface\RenderableInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuizCaptureRepository::class)]
@@ -38,6 +39,11 @@ class QuizCapture extends CaptureElement
 
         return $this;
     }
+    public function removeQuestionInstance(QuestionInstance $instance): self
+    {
+        $this->questionsInstances->removeElement($instance);
+        return $this;
+    }
 
     public function removeQuestionsInstance(QuestionInstance $questionsInstance): static
     {
@@ -49,5 +55,14 @@ class QuizCapture extends CaptureElement
         }
 
         return $this;
+    }
+    public function getInterpolableVariables(): array
+    {
+        return [];
+    }
+
+    public function getRenderable(): ?RenderableInterface
+    {
+        return null;
     }
 }

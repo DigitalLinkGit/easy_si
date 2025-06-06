@@ -4,6 +4,7 @@
 namespace App\Design\Entity;
 
 use App\Design\Repository\DataTableCellRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DataTableCellRepository::class)]

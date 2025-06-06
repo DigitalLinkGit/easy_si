@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Prévisualisation de la capture{% endblock %}
+
+{% block body %}
+  <div class="container my-4">
+		{% include 'global/partials/_page_header.html.twig' with {
+        title: 'Preview'
+        } %}
+
+  <div class="container my-5">
+
+    {# Titre principal du document, si défini #}
+    {% if capture.renderTitle %}
+      <h1 class="mb-4">{{ capture.renderTitle }}</h1>
+    {% else %}
+      <h1 class="mb-4">Prévisualisation de la capture : {{ capture.name }}</h1>
+    {% endif %}
+
+    {# Corps du document : chaque élément affiché comme une section #}
+    {% for element in capture.elements %}
+      {% if element.renderTitle %}
+        <h{{ element.renderTitleLevel ?? 2 }}>{{ element.renderTitle }}</h{{ element.renderTitleLevel ?? 2 }}>
+      {% endif %}
+
+      {{ element.render({})|nl2br|raw }}
+
+
+      <br><br> {# Saut de ligne entre les blocs #}
+    {% else %}
+      <p class="text-muted">Aucun élément à afficher pour cette capture.</p>
+    {% endfor %}
+    
+  </div>
+{% endblock %}
