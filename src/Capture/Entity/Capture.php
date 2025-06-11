@@ -2,7 +2,7 @@
 
 namespace App\Capture\Entity;
 
-use App\Global\Entity\Role;
+use App\Global\Entity\ParticipantRole;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -26,7 +26,7 @@ class Capture
     #[ORM\JoinTable(name: 'capture_elements')]
     private Collection $elements;
 
-    #[ORM\ManyToMany(targetEntity: Role::class)]
+    #[ORM\ManyToMany(targetEntity: ParticipantRole::class)]
     private Collection $requiredRoles;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -96,7 +96,7 @@ class Capture
         return $this;
     }
 
-    public function addRequiredRole(Role $role): static
+    public function addRequiredRole(ParticipantRole $role): static
     {
         if (!$this->requiredRoles->contains($role)) {
             $this->requiredRoles->add($role);
@@ -113,11 +113,11 @@ class Capture
             $respondentRole = $element->getRespondentRole();
             $validatorRole = $element->getValidatorRole();
 
-            if ($respondentRole instanceof \App\Global\Entity\Role) {
+            if ($respondentRole instanceof \App\Global\Entity\ParticipantRole) {
                 $roles[$respondentRole->getId()] = $respondentRole;
             }
 
-            if ($validatorRole instanceof \App\Global\Entity\Role) {
+            if ($validatorRole instanceof \App\Global\Entity\ParticipantRole) {
                 $roles[$validatorRole->getId()] = $validatorRole;
             }
         }
@@ -133,7 +133,7 @@ class Capture
         return $this->requiredRoles;
     }
 
-    public function removeRequiredRole(Role $requiredRole): static
+    public function removeRequiredRole(ParticipantRole $requiredRole): static
     {
         $this->requiredRoles->removeElement($requiredRole);
 

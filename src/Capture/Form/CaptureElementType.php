@@ -2,7 +2,8 @@
 // src/Form/CaptureElementType.php
 namespace App\Capture\Form;
 
-use App\Global\Entity\Role;
+use App\Global\Entity\ParticipantRole;
+use App\Global\Repository\ParticipantRoleRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -13,8 +14,15 @@ use App\Capture\Entity\CaptureElement;
 
 class CaptureElementType extends AbstractType
 {
+    private ParticipantRoleRepository $roleRepository;
+
+    public function __construct(ParticipantRoleRepository $roleRepository)
+    {
+        $this->roleRepository = $roleRepository;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom',
@@ -25,16 +33,16 @@ class CaptureElementType extends AbstractType
                 'required' => true,
             ])
             ->add('respondentRole', EntityType::class, [
-                'class' => Role::class,
+                'class' => ParticipantRole::class,
+                'choices' => $this->roleRepository->findBy(['isInternal' => false]),
                 'choice_label' => 'name',
                 'label' => 'Rôle du répondant',
-                'placeholder' => 'Sélectionner un rôle',
             ])
             ->add('validatorRole', EntityType::class, [
-                'class' => Role::class,
+                'class' => ParticipantRole::class,
+                'choices' => $this->roleRepository->findBy(['isInternal' => true]),
                 'choice_label' => 'name',
                 'label' => 'Rôle du validateur',
-                'placeholder' => 'Sélectionner un rôle',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',

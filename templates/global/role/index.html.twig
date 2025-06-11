@@ -17,6 +17,7 @@
             <tr>
                 <th>Nom</th>
                 <th>Description</th>
+                <th>Interne</th>
                 <th class="text-end"></th>
             </tr>
         </thead>
@@ -25,6 +26,7 @@
                 <tr>
                     <td>{{ role.name }}</td>
                     <td>{{ role.description }}</td>
+                    <td>{{ role.internal }}</td>
                     <td class="text-end">
                         <div class="d-flex justify-content-end gap-1">
                             <a href="{{ path('app_role_show', {'id': role.id}) }}" class="btn btn-sm btn-outline-primary btn-icon" title="Aperçu">

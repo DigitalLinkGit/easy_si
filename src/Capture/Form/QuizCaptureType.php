@@ -11,7 +11,7 @@ class QuizCaptureType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-
+            parent::buildForm($builder, $options);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

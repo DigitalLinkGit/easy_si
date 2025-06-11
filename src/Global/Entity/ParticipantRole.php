@@ -2,11 +2,11 @@
 
 namespace App\Global\Entity;
 
-use App\Global\Repository\RoleRepository;
+use App\Global\Repository\ParticipantRoleRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: RoleRepository::class)]
-class Role
+#[ORM\Entity(repositoryClass: ParticipantRoleRepository::class)]
+class ParticipantRole
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -19,9 +19,10 @@ class Role
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
-    public function __construct()
-    {
-    }
+    #[ORM\Column(type: 'boolean')]
+    private bool $isInternal = false;
+
+    public function __construct() {}
 
     public function getId(): ?int
     {
@@ -48,6 +49,18 @@ class Role
     public function setDescription(?string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function isInternal(): ?bool
+    {
+        return $this->isInternal;
+    }
+
+    public function setIsInternal(bool $isInternal): static
+    {
+        $this->isInternal = $isInternal;
 
         return $this;
     }

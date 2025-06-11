@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Capture\Entity;
-use App\Global\Entity\Role;
+use App\Global\Entity\ParticipantRole;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
@@ -16,7 +16,7 @@ class ParticipantAssignment
     private string $email;
 
     #[ORM\ManyToOne]
-    private ?Role $role = null;
+    private ?ParticipantRole $role = null;
 
     #[ORM\ManyToOne(inversedBy: 'participantAssignments')]
     #[ORM\JoinColumn(nullable: false)]
@@ -38,12 +38,12 @@ class ParticipantAssignment
         return $this;
     }
 
-    public function getRole(): ?Role
+    public function getRole(): ?ParticipantRole
     {
         return $this->role;
     }
 
-    public function setRole(?Role $role): static
+    public function setRole(?ParticipantRole $role): static
     {
         $this->role = $role;
         return $this;

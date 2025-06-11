@@ -2,7 +2,7 @@
 
 namespace App\Capture\Entity;
 
-use App\Global\Entity\Role;
+use App\Global\Entity\ParticipantRole;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Capture\Interface\RenderableInterface;
@@ -30,10 +30,10 @@ abstract class CaptureElement
     protected ?string $description = null;
 
     #[ORM\ManyToOne]
-    protected ?Role $respondentRole = null;
+    protected ?ParticipantRole $respondentRole = null;
 
     #[ORM\ManyToOne]
-    protected ?Role $validatorRole = null;
+    protected ?ParticipantRole $validatorRole = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
     protected ?string $renderTemplate = null;
@@ -77,22 +77,22 @@ abstract class CaptureElement
         $this->description = $description;
     }
 
-    public function getRespondentRole(): ?Role
+    public function getRespondentRole(): ?ParticipantRole
     {
         return $this->respondentRole;
     }
 
-    public function setRespondentRole(?Role $role): void
+    public function setRespondentRole(?ParticipantRole $role): void
     {
         $this->respondentRole = $role;
     }
 
-    public function getValidatorRole(): ?Role
+    public function getValidatorRole(): ?ParticipantRole
     {
         return $this->validatorRole;
     }
 
-    public function setValidatorRole(?Role $role): void
+    public function setValidatorRole(?ParticipantRole $role): void
     {
         $this->validatorRole = $role;
     }
