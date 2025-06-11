@@ -8,8 +8,25 @@
 } %}
 
 {{ form_start(form) }}
-<div class="mb-3">
-	{{ form_row(form.name) }}
+<div class="row">
+	<div class="col-md-4">
+		{{ form_row(form.name, {
+        label_attr: { class: 'form-label fw-semibold' },
+        attr: { class: 'form-control' }
+    }) }}
+	</div>
+	<div class="col-md-4">
+		{{ form_row(form.respondentRole, {
+        label_attr: { class: 'form-label fw-semibold' },
+        attr: { class: 'form-select' }
+    }) }}
+	</div>
+	<div class="col-md-4">
+		{{ form_row(form.validatorRole, {
+        label_attr: { class: 'form-label fw-semibold' },
+        attr: { class: 'form-select' }
+    }) }}
+	</div>
 </div>
 <div class="mb-3">
 	{{ form_row(form.description) }}
@@ -50,7 +67,7 @@
 	<div id="field-palette">
 		<h5>Champs disponibles</h5>
 		{% for key, label in fieldTypes %}
-			<div class="draggable-field" draggable="true" data-type="{{ key }}">
+			<div class="draggable-element mb-2" draggable="true" data-type="{{ key }}">
 				{{ label }}
 			</div>
 		{% endfor %}
@@ -66,7 +83,9 @@
 	document.addEventListener('DOMContentLoaded', () => {
 const wrapper = document.getElementById('formFields-wrapper');
 const editor = document.getElementById('form-editor');
-const palette = document.querySelectorAll('.draggable-field');
+//const palette = document.querySelectorAll('.draggable-field');
+const palette = document.querySelectorAll('.draggable-element');
+
 
 const typeLabels = {
 text: 'Texte court',
@@ -103,30 +122,28 @@ function addField(type) {
 	const tempDiv = document.createElement('div');
 	tempDiv.innerHTML = newForm;
 	const base = tempDiv.firstElementChild;
-	if (! base) 
-	return;
-
-
+	if (!base) return;
 
 	const labelInput = base.querySelector('[name$="[label]"]');
 	const nameInput = base.querySelector('[name$="[name]"]');
 	const typeInput = base.querySelector('[name$="[type]"]');
 	const posInput = base.querySelector('[name$="[position]"]');
 
-	if (typeInput) 
-	typeInput.value = type;
+	if (typeInput && type) {
+		typeInput.value = type;
+		typeInput.setAttribute('value', type);
+	}
 
-
-	if (posInput) 
-	posInput.value = index;
-
-
+	if (posInput) {
+		posInput.value = index;
+		posInput.setAttribute('value', index);
+	}
 
 	const wrapperEntry = document.createElement('div');
 	wrapperEntry.className = 'form-field-entry d-flex align-items-center gap-2';
 
-	wrapperEntry.appendChild(labelInput);
-	wrapperEntry.appendChild(nameInput);
+	if (labelInput) wrapperEntry.appendChild(labelInput);
+	if (nameInput) wrapperEntry.appendChild(nameInput);
 
 	const badge = document.createElement('span');
 	badge.className = 'badge bg-secondary me-2';
@@ -140,11 +157,15 @@ function addField(type) {
 	removeBtn.addEventListener('click', () => wrapperEntry.remove());
 	wrapperEntry.appendChild(removeBtn);
 
-	wrapperEntry.appendChild(typeInput);
-	wrapperEntry.appendChild(posInput);
+	if (typeInput) wrapperEntry.appendChild(typeInput);
+	if (posInput) wrapperEntry.appendChild(posInput);
 
 	wrapper.appendChild(wrapperEntry);
 }
+
+
+
+
 
 
 // Suppression pour les champs existants déjà rendus
@@ -166,10 +187,10 @@ btn.closest('.form-field-entry').remove();
 	#form-editor {
 		flex: 1;
 		min-height: 400px;
-		background: #f8f9fa;
 		padding: 20px;
-		border: 2px dashed #ccc;
-		border-radius: 8px;
+		border:2px dashed var(--easy-primary) !important;
+  		background-color: var(--easy-bg-surface);
+  		border-radius: var(--easy-max-radius);
 	}
 	#field-palette {
 		width: 280px;
@@ -178,15 +199,6 @@ btn.closest('.form-field-entry').remove();
 		padding: 15px;
 		border-radius: 8px;
 	}
-	.draggable-field {
-		padding: 6px 12px;
-		margin-bottom: 10px;
-		background: #eaf6fa;
-		border: 1px solid #2395b2;
-		border-radius: 4px;
-		cursor: grab;
-	}
-
 	.form-field-entry {
 		display: flex;
 		align-items: center;

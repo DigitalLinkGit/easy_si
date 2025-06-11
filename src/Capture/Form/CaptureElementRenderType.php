@@ -39,11 +39,18 @@ class CaptureElementRenderType extends AbstractType
             ])
             ->add('results', CollectionType::class, [
                 'entry_type' => RenderResultType::class,
+                'label'=> false,
                 'allow_add' => true,
                 'allow_delete' => true,
                 'by_reference' => false,
-                'entry_options'=>['label'=>false],
-                'attr'=>['data-controller'=>'form-collection']
+                'entry_options'=>[
+                    'label'=>false,
+                    'attr' => ['class' => 'd-flex align-items-start gap-2 w-100'],
+                ],
+                'attr'=>[
+                    'data-form-collection-add-label-value' => 'Ajouter une variable',
+                    'data-form-collection-delete-label-value' => 'Supprimer la variable'
+                ]
             ]);
     }
 

@@ -11,20 +11,20 @@
 
       {{ form_row(form.description, {
         label: 'Description',
-        label_attr: { class: 'form-label fw-semibold small mt-3' },
+        label_attr: { class: 'form-label fw-semibold small' },
         attr: { class: 'form-control', rows: 4 }
       }) }} 
 
       {{ form_row(form.renderTitle, {
         label: 'Nom du document final',
-        label_attr: { class: 'form-label fw-semibold small mt-3' },
+        label_attr: { class: 'form-label fw-semibold small' },
         attr: { class: 'form-control', rows: 4 }
       }) }}
     </div>
 
     <div class="col-md-4 d-flex flex-column">
       <label class="form-label fw-semibold small">Rôles nécessaires</label>
-      <div class="border rounded p-3 mt-1" style="flex: 1;">
+      <div class="border rounded p-3" style="flex: 1;">
         <ul class="list-group list-group-sm mb-0">
           {% for role in capture.allRolesFromElements %}
             <li class="list-group-item py-1">{{ role.name }}</li>

@@ -18,19 +18,20 @@
   <div class="card mb-4 border border-primary-subtle shadow-sm">
     <div class="card-header bg-light fw-bold d-flex justify-content-between align-items-center">
       <div class="d-flex align-items-center gap-2">
-        <span>({{ instance.id }}) {{ instance.question.name }} : {{ instance.question.content }}</span>
-        <a href="{{ path('app_quiz_render_question', { instanceId: instance.id }) }}" class="btn btn-sm btn-outline-dark ms-2" title="Prévisualiser le rendu">
+        <a href="{{ path('app_quiz_render_question', { instanceId: instance.id }) }}" class="btn btn-sm btn-outline-primary ms-2" title="Prévisualiser le rendu">
           <i class="bi bi-eye"></i>
         </a>
+        <span>({{ instance.id }}) : {{ instance.question.name }}</span>
+        
       </div>
-      <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#{{ collapseId }}" aria-expanded="false" aria-controls="{{ collapseId }}">
+      <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#{{ collapseId }}" aria-expanded="false" aria-controls="{{ collapseId }}">
         <i class="bi bi-chevron-expand"></i>
       </button>
     </div>
 
     <div id="{{ collapseId }}" class="collapse show">
       <div class="card-body">
-
+        {{ instance.question.content }}
         {% if instance.question.proposals|length > 0 %}
           <ul class="list-group list-group-flush mb-3">
             {% for proposal in instance.question.proposals %}
@@ -43,7 +44,7 @@
                     <span class="badge bg-info ms-2">condition</span>
                   {% else %}
                     {% if instance.nextQuestionInstance is null %}
-                      <a href="{{ path('app_quiz_add_question', { quizId: instance.quiz.id, previousInstanceId: instance.id, proposalId: proposal.id }) }}" class="btn btn-sm btn-outline-success mt-2">
+                      <a href="{{ path('app_quiz_add_question', { quizId: instance.quiz.id, previousInstanceId: instance.id, proposalId: proposal.id }) }}" class="btn btn-sm btn-outline-primary">
                         <i class="bi bi-plus-circle"></i>
                         Ajouter suite
                       </a>

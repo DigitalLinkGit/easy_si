@@ -20,7 +20,7 @@ class CaptureElementType extends AbstractType
                 'label' => 'Nom',
                 'attr' => [
                     'class' => 'form-control',
-                    'placeholder' => 'Nom de la capture...',
+                    'placeholder' => 'Nom de l\'élémént...',
                 ],
                 'required' => true,
             ])

@@ -3,6 +3,7 @@
 namespace App\Capture\Controller;
 
 use App\Capture\Entity\Capture;
+use App\Capture\Entity\CaptureElement;
 use App\Capture\Form\CaptureType;
 use App\Capture\Repository\QuizCaptureRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -95,12 +96,12 @@ final class CaptureController extends AbstractController
     #[Route('/{id}/add-element/{elementId}', name: 'app_capture_add_element', methods: ['GET'])]
     public function addElement(Capture $capture, int $elementId, QuizCaptureRepository $quizRepo, EntityManagerInterface $em): Response
     {
-        $quiz = $quizRepo->find($elementId);
-        if (!$quiz) {
-            throw $this->createNotFoundException('QuizCapture introuvable');
+        $element = $em->getRepository(CaptureElement::class)->find($elementId);
+        if (!$element) {
+            throw $this->createNotFoundException('Element introuvable');
         }
+        $capture->addElement($element);
 
-        $capture->addElement($quiz);
         $em->flush();
 
         return $this->redirectToRoute('app_capture_edit', ['id' => $capture->getId()]);

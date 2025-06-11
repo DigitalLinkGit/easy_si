@@ -18,16 +18,18 @@ class RenderResultType extends AbstractType
                 'label' => false,
                 'attr' => [
                     'placeholder' => 'Nom de la variable',
-                    'class' => 'form-control form-control-sm w-25',
+                    'class' => 'form-control',
                 ]
             ])
             ->add('expression', TextType::class, [
                 'required' => true,
                 'label' => false,
+                'row_attr' => [
+                    'class' => 'flex-grow-1',
+                ],
                 'attr' => [
                     'placeholder' => 'Expression (ex: [a] * 1.2)',
-                    'class' => 'form-control form-control-sm',
-                    'style' => 'flex: 1;',
+                    'class' => 'form-control',
                 ]
             ]);
     }

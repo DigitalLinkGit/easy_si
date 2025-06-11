@@ -1,17 +1,48 @@
-import { Controller } from '@hotwired/stimulus';
+import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-    connect() {
-        const btn = document.createElement('button')
-        btn.setAttribute('class','btn btn-outline-primary')
-        btn.innerText = 'Ajouter'
-        btn.setAttribute('type', 'button')
-        btn.addEventListener('click',this.addElement)
-        this.element.append(btn)
-        console.log('button ok')    
-    }
+  static values = {
+    addLabel: String,
+    deleteLabel: String,
+  };
 
-    addElement = (e) => {
-        e.preventDefault()    
+  connect() {
+    this.index = this.element.childElementCount;
+    const btn = document.createElement("button");
+    btn.setAttribute("class", "btn btn-outline-primary");
+    btn.innerText = this.addLabelValue || "Ajouter un élémént";
+    btn.setAttribute("type", "button");
+    btn.addEventListener("click", this.addElement);
+    this.element.childNodes.forEach(this.addDeleteButton);
+    this.element.append(btn);
+  }
+
+  addElement = (e) => {
+    e.preventDefault();
+    const element = document
+      .createRange()
+      .createContextualFragment(
+        this.element.dataset["prototype"].replaceAll("__name__", this.index)
+      ).firstElementChild;
+    this.addDeleteButton(element);
+    this.index++;
+    e.currentTarget.insertAdjacentElement("beforebegin", element);
+  };
+
+  addDeleteButton = (item) => {
+    const btn = document.createElement("button");
+    btn.setAttribute("class", "btn btn-outline-primary");
+    btn.innerText = this.deleteLabelValue || "Supprimer l'élément";
+    btn.setAttribute("type", "button");
+    const innerDiv = item.querySelector("div");
+    if (innerDiv) {
+      innerDiv.append(btn);
+    } else {
+      item.append(btn);
     }
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      item.remove();
+    });
+  };
 }

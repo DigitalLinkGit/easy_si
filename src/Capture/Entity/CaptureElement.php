@@ -146,7 +146,7 @@ abstract class CaptureElement
     {
         return $this->results;
     }
-    
+
     public function setResults(iterable $results): self
     {
         $this->results = new ArrayCollection();
@@ -193,5 +193,14 @@ abstract class CaptureElement
         }
 
         return $this;
+    }
+
+    public function getEditRouteName(): string
+    {
+        return match (true) {
+            $this instanceof QuizCapture => 'app_quiz_edit',
+            $this instanceof FormCapture => 'app_form_capture_edit',
+            default => throw new \LogicException('Type de d\élément de capture non pris en charge'),
+        };
     }
 }

@@ -4,9 +4,11 @@
 namespace App\Capture\Form;
 
 use App\Capture\Entity\FormCapture;
+use App\Global\Entity\Role;
 use App\Capture\Form\FormFieldType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -19,6 +21,18 @@ class FormCaptureType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom du formulaire',
+            ])
+            ->add('respondentRole', EntityType::class, [
+                'class' => Role::class,
+                'choice_label' => 'name',
+                'label' => 'Rôle du répondant',
+                'placeholder' => 'Sélectionner un rôle',
+            ])
+            ->add('validatorRole', EntityType::class, [
+                'class' => Role::class,
+                'choice_label' => 'name',
+                'label' => 'Rôle du validateur',
+                'placeholder' => 'Sélectionner un rôle',
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',
