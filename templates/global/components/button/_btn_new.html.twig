@@ -1,3 +1,6 @@
-<a href="{{ path(base_route~ '_new') }}" class="btn btn-sm btn-outline-primary btn-fixed-width" title="Ajouter">
-	<i class="bi bi-plus"></i>Ajouter
+<a href="{{ path(route, params|default({})) }}"
+   class="btn btn-primary btn-sm"
+   title="Ajouter">
+	<i class="bi bi-plus"></i>
+	Ajouter
 </a>

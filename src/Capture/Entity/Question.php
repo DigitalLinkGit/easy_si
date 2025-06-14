@@ -22,6 +22,10 @@ class Question
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
+    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    private ?QuizCapture $quiz = null;
+
     #[ORM\Column(type: 'string', enumType: AnswerType::class)]
     private AnswerType $type = AnswerType::TEXT;
 
@@ -31,20 +35,11 @@ class Question
     #[ORM\OneToMany(mappedBy: 'question', targetEntity: Proposal::class, cascade: ['persist', 'remove'], orphanRemoval: true, fetch: 'EAGER')]
     private Collection $proposals;
 
-    #[ORM\ManyToOne(inversedBy: 'questions')]
-    private ?Category $category = null;
+    
 
-    #[ORM\OneToMany(mappedBy: 'question', targetEntity: QuestionInstance::class)]
-    private Collection $instances;
-
-    public function getInstances(): Collection
-    {
-        return $this->instances;
-    }
     public function __construct()
     {
         $this->proposals = new ArrayCollection();
-        $this->instances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -105,39 +100,6 @@ class Question
         return $this;
     }
 
-    public function getCategory(): ?Category
-    {
-        return $this->category;
-    }
-
-    public function setCategory(?Category $category): static
-    {
-        $this->category = $category;
-
-        return $this;
-    }
-
-    public function addInstance(QuestionInstance $instance): static
-    {
-        if (!$this->instances->contains($instance)) {
-            $this->instances->add($instance);
-            $instance->setQuestion($this);
-        }
-
-        return $this;
-    }
-
-    public function removeInstance(QuestionInstance $instance): static
-    {
-        if ($this->instances->removeElement($instance)) {
-            // set the owning side to null (unless already changed)
-            if ($instance->getQuestion() === $this) {
-                $instance->setQuestion(null);
-            }
-        }
-
-        return $this;
-    }
     public function getType(): AnswerType
     {
         return $this->type;
@@ -146,6 +108,18 @@ class Question
     public function setType(AnswerType $type): self
     {
         $this->type = $type;
+        return $this;
+    }
+
+    public function getQuiz(): ?QuizCapture
+    {
+        return $this->quiz;
+    }
+
+    public function setQuiz(?QuizCapture $quiz): static
+    {
+        $this->quiz = $quiz;
+
         return $this;
     }
 }

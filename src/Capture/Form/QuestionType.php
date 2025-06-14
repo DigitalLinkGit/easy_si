@@ -22,7 +22,7 @@ class QuestionType extends AbstractType
             ->add('name', null, [
                 'label' => 'Identifiant',
                 'attr' => ['class' => 'form-control'],
-                'row_attr' => ['class' => 'mb-3'],
+                'row_attr' => ['class' => 'col-4'],
             ])
             ->add('type', ChoiceType::class, [
                 'label' => 'Type de réponse',
@@ -37,17 +37,7 @@ class QuestionType extends AbstractType
                 'choice_label' => fn($choice, $key, $value) => $key,
                 'choice_value' => fn(?AnswerType $type) => $type?->value,
                 'attr' => ['class' => 'form-select', 'id' => 'question_type'],
-                'row_attr' => ['class' => 'mb-3'],
-            ])
-
-            ->add('category', EntityType::class, [
-                'class' => Category::class,
-                'label' => 'Catégorie',
-                'choice_label' => 'name',
-                'placeholder' => 'Choisir une catégorie',
-                'required' => false,
-                'attr' => ['class' => 'form-select'],
-                'row_attr' => ['class' => 'mb-3'],
+                'row_attr' => ['class' => 'col-4'],
             ])
             ->add('content', TextareaType::class, [
                 'label' => 'Intitulé',

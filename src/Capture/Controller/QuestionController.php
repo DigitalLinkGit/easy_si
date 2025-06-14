@@ -25,7 +25,7 @@ final class QuestionController extends AbstractController
     }
 
     #[Route('/new', name: 'app_question_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em, LoggerInterface $logger): Response
+    public function new(Request $request, EntityManagerInterface $em, LoggerInterface $logger,int $quizId): Response
     {
         $question = new Question();
         $form = $this->createForm(QuestionType::class, $question);
@@ -42,7 +42,7 @@ final class QuestionController extends AbstractController
                     $em->flush();
 
                     $this->addFlash('success', 'Question créée avec succès.');
-                    return $this->redirectToRoute('app_question_index');
+                    return $this->redirectToRoute('app_quiz_edit',['id'=>$quizId]);
                 } catch (\Throwable $e) {
                     $logger->error('Erreur lors de la création de la question : ' . $e->getMessage(), ['exception' => $e]);
                     $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement.');
@@ -93,38 +93,13 @@ final class QuestionController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_question_delete', methods: ['POST'])]
-    public function delete(
-        Request $request,
-        Question $question,
-        EntityManagerInterface $em,
-        LoggerInterface $logger
-    ): Response {
-        $id = $question->getId();
-
-        if ($this->isCsrfTokenValid('delete' . $id, $request->request->get('_token'))) {
-            try {
-                $em->remove($question);
-                $em->flush();
-
-                $this->addFlash('success', 'La question a été supprimée avec succès.');
-            } catch (ForeignKeyConstraintViolationException $e) {
-                $logger->warning("Suppression impossible : la question $id est utilisée ailleurs.", [
-                    'exception' => $e,
-                ]);
-
-                // Vérification manuelle dans les QuestionInstance par exemple
-                $usages = $question->getInstances(); // Assuming mappedBy="question"
-                if (count($usages) > 0) {
-                    $sectionNames = array_map(fn($instance) => $instance->getSection()?->getName(), $usages->toArray());
-                    $sectionList = implode(', ', array_filter($sectionNames));
-
-                    $this->addFlash('danger', "Impossible de supprimer cette question : elle est utilisée dans la ou les section(s) : {$sectionList}.");
-                } else {
-                    $this->addFlash('danger', 'Impossible de supprimer cette question : elle est utilisée ailleurs dans le système.');
-                }
-            }
+    public function delete(Request $request, Question $question, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $question->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($question);
+            $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_question_index');
+        return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
     }
 }

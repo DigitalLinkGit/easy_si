@@ -6,6 +6,7 @@ use App\Capture\Entity\Category;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -29,6 +30,13 @@ class CategoryType extends AbstractType
                     'class' => 'form-control',
                     'rows' => 3,
                     'placeholder' => 'Optionnel : description de la catégorie...',
+                ],
+            ])
+            ->add('save', SubmitType::class, [
+                'label' => 'Enregistrer',
+                'row_attr' => ['class' => 'text-end'],
+                'attr' => [
+                    'class' => 'btn btn-primary mt-2'
                 ],
             ]);
     }

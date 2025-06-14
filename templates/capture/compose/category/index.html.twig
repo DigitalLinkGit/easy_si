@@ -4,23 +4,33 @@
 {% endblock %}
 
 {% block body %}
-<div class="container my-4">
+
 	{% include 'global/partials/_page_header.html.twig' with {
     route_return: 'app_category_index',
     title: 'Catégories :'
     } %}
 
-	{% include 'global/components/table/_table.html.twig' with {
+    {% include 'global/components/table/_table.html.twig' with {
     items: categories,
     columns: ['name', 'description'],
     headers: ['Nom', 'Description'],
-    filter:true,
-    sort:true,
-    show:true,
-    edit:true,
-    delete:true,
-    add:true,
-    base_route: 'app_category'
-    } %}
-</div>
+    filter: true,
+    sort: true,
+    actions: {
+        show:  {
+            route: 'app_category_show',
+            param_map: { id: 'id' }
+        },
+        edit:  {
+            route: 'app_category_edit',
+            param_map: { id: 'id' }
+        },
+        delete: {
+            route: 'app_category_delete',
+            param_map: { id: 'id' }
+        },
+        add: {route: 'app_category_new'}
+    }
+} %}
+
 {% endblock %}

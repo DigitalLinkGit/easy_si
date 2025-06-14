@@ -3,36 +3,19 @@
 <fieldset {{ disabled ? 'disabled' }}>
 
 	<div class="d-flex gap-4">
-		<div class="flex-grow-1">
-			{{ form_row(form.name, {
-        label_attr: { class: 'form-label fw-semibold' },
-        attr: { class: 'form-control' }
-    }) }}
-		</div>
-
-		<div style="min-width: 200px;">
-			{{ form_row(form.type, {
-        label_attr: { class: 'form-label fw-semibold' },
-        attr: { class: 'form-select', id: 'question_type' }
-    }) }}
-		</div>
-
-		<div style="min-width: 200px;">
-			{{ form_row(form.category, {
-        label_attr: { class: 'form-label fw-semibold' },
-        attr: { class: 'form-select' }
-    }) }}
-		</div>
+			{{ form_row(form.name) }}
+			{{ form_row(form.type) }}
 	</div>
 
 	<div class="mb-3">
-		{{ form_row(form.content, {
-      label_attr: { class: 'form-label fw-semibold' },
-      attr: { class: 'form-control', rows: 3 }
-  }) }}
+		{{ form_row(form.content) }}
 	</div>
+	
+	{{ include('global/components/button/_btn_save.html.twig') }}
+</div>
   <h5>Réponse :</h5>
-	<div id="proposed-block" style="display: none;">
+	
+  <div id="proposed-block" style="display: none;">
 		<div data-collection-holder data-prototype="{{ form_widget(form.proposals.vars.prototype)|e('html_attr') }}">
 			{% for proposal in form.proposals %}
 				<div class="proposal-item mb-2 d-flex align-items-center gap-3">

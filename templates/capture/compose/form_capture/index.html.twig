@@ -9,17 +9,27 @@
     title: 'Formulaire de capture :'
     } %}
 
-	{% include 'global/components/table/_table.html.twig' with {
+    {% include 'global/components/table/_table.html.twig' with {
     items: form_captures,
     columns: ['name', 'description'],
     headers: ['Nom', 'Description'],
-    filter:true,
-    sort:true,
-    show:false,
-    edit:true,
-    delete:true,
-    add:true,
-    base_route: 'app_form_capture'
-    } %}
+    filter: true,
+    sort: true,
+    actions: {
+        show:  {
+            route: 'app_form_capture_show',
+            param_map: { id: 'id' }
+        },
+        edit:  {
+            route: 'app_form_capture_edit',
+            param_map: { id: 'id' }
+        },
+        delete: {
+            route: 'app_form_capture_delete',
+            param_map: { id: 'id' }
+        },
+        add: {route: 'app_form_capture_new'}
+    }
+} %} 
 </div>
 {% endblock %}

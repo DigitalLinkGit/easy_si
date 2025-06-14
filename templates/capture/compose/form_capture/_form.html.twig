@@ -8,38 +8,9 @@
 } %}
 
 {{ form_start(form) }}
-<div class="row">
-	<div class="col-md-4">
-		{{ form_row(form.name, {
-        label_attr: { class: 'form-label fw-semibold' },
-        attr: { class: 'form-control' }
-    }) }}
-	</div>
-	<div class="col-md-4">
-		{{ form_row(form.respondentRole, {
-        label_attr: { class: 'form-label fw-semibold' },
-        attr: { class: 'form-select' }
-    }) }}
-	</div>
-	<div class="col-md-4">
-		{{ form_row(form.validatorRole, {
-        label_attr: { class: 'form-label fw-semibold' },
-        attr: { class: 'form-select' }
-    }) }}
-	</div>
-</div>
-<div class="mb-3">
-	{{ form_row(form.description) }}
-</div>
 
-<div class="d-flex justify-content-between mb-3">
-	{% if form_capture is defined and form_capture.id is not null %}
-		<a href="{{ path('capture_element_edit_render', { id: form_capture.id }) }}" class="btn btn-outline-primary mt-4">
-			Éditer le rendu
-		</a>
-	{% endif %}
-	{{ include('global/components/button/_btn_save.html.twig') }}
-</div>
+{{ include('capture/compose/capture-element/_form_header.html.twig') }}
+
 <h5>Éditeur de formulaire</h5>
 <div
 	id="builder-container">
@@ -72,9 +43,34 @@
 			</div>
 		{% endfor %}
 	</div>
-	
+
 </div>
 
+{% include 'global/components/button/_btn_bar.html.twig' with {
+    buttons: {
+        render_edit: {
+            type: 'link',
+            route: 'capture_element_edit_render',
+            param_map: { id: 'form_capture.id' },
+            icon: 'bi-pencil',
+            label: 'Éditer le rendu',
+            class: 'btn btn-outline-primary btn-sm'
+        },
+        back: {
+            type: 'link',
+            route: 'app_form_capture_index',
+            icon: 'bi-arrow-left',
+            label: 'Retour',
+            class: 'btn btn-outline-primary btn-sm'
+        },
+        save: {
+            type: 'submit',
+            icon: 'bi-check',
+            label: 'Enregistrer',
+            class: 'btn btn-primary btn-sm'
+        }
+    }
+} %}
 
 {{ form_end(form) }}
 
@@ -83,7 +79,7 @@
 	document.addEventListener('DOMContentLoaded', () => {
 const wrapper = document.getElementById('formFields-wrapper');
 const editor = document.getElementById('form-editor');
-//const palette = document.querySelectorAll('.draggable-field');
+// const palette = document.querySelectorAll('.draggable-field');
 const palette = document.querySelectorAll('.draggable-element');
 
 
@@ -115,57 +111,68 @@ addField(type);
 });
 
 function addField(type) {
-	const prototype = wrapper.dataset.prototype;
-	const newForm = prototype.replace(/__name__/g, index);
-	index++;
+const prototype = wrapper.dataset.prototype;
+const newForm = prototype.replace(/__name__/g, index);
+index++;
 
-	const tempDiv = document.createElement('div');
-	tempDiv.innerHTML = newForm;
-	const base = tempDiv.firstElementChild;
-	if (!base) return;
+const tempDiv = document.createElement('div');
+tempDiv.innerHTML = newForm;
+const base = tempDiv.firstElementChild;
+if (! base) 
+return;
 
-	const labelInput = base.querySelector('[name$="[label]"]');
-	const nameInput = base.querySelector('[name$="[name]"]');
-	const typeInput = base.querySelector('[name$="[type]"]');
-	const posInput = base.querySelector('[name$="[position]"]');
 
-	if (typeInput && type) {
-		typeInput.value = type;
-		typeInput.setAttribute('value', type);
-	}
 
-	if (posInput) {
-		posInput.value = index;
-		posInput.setAttribute('value', index);
-	}
+const labelInput = base.querySelector('[name$="[label]"]');
+const nameInput = base.querySelector('[name$="[name]"]');
+const typeInput = base.querySelector('[name$="[type]"]');
+const posInput = base.querySelector('[name$="[position]"]');
 
-	const wrapperEntry = document.createElement('div');
-	wrapperEntry.className = 'form-field-entry d-flex align-items-center gap-2';
-
-	if (labelInput) wrapperEntry.appendChild(labelInput);
-	if (nameInput) wrapperEntry.appendChild(nameInput);
-
-	const badge = document.createElement('span');
-	badge.className = 'badge bg-secondary me-2';
-	badge.innerText = typeLabels[type] || type;
-	wrapperEntry.appendChild(badge);
-
-	const removeBtn = document.createElement('button');
-	removeBtn.type = 'button';
-	removeBtn.className = 'btn btn-sm btn-outline-danger ms-2 remove-field';
-	removeBtn.innerText = '×';
-	removeBtn.addEventListener('click', () => wrapperEntry.remove());
-	wrapperEntry.appendChild(removeBtn);
-
-	if (typeInput) wrapperEntry.appendChild(typeInput);
-	if (posInput) wrapperEntry.appendChild(posInput);
-
-	wrapper.appendChild(wrapperEntry);
+if (typeInput && type) {
+typeInput.value = type;
+typeInput.setAttribute('value', type);
 }
 
+if (posInput) {
+posInput.value = index;
+posInput.setAttribute('value', index);
+}
+
+const wrapperEntry = document.createElement('div');
+wrapperEntry.className = 'form-field-entry d-flex align-items-center gap-2';
+
+if (labelInput) 
+wrapperEntry.appendChild(labelInput);
+
+
+if (nameInput) 
+wrapperEntry.appendChild(nameInput);
 
 
 
+const badge = document.createElement('span');
+badge.className = 'badge bg-secondary me-2';
+badge.innerText = typeLabels[type] || type;
+wrapperEntry.appendChild(badge);
+
+const removeBtn = document.createElement('button');
+removeBtn.type = 'button';
+removeBtn.className = 'btn btn-sm btn-outline-danger ms-2 remove-field';
+removeBtn.innerText = '×';
+removeBtn.addEventListener('click', () => wrapperEntry.remove());
+wrapperEntry.appendChild(removeBtn);
+
+if (typeInput) 
+wrapperEntry.appendChild(typeInput);
+
+
+if (posInput) 
+wrapperEntry.appendChild(posInput);
+
+
+
+wrapper.appendChild(wrapperEntry);
+}
 
 
 // Suppression pour les champs existants déjà rendus
@@ -188,9 +195,9 @@ btn.closest('.form-field-entry').remove();
 		flex: 1;
 		min-height: 400px;
 		padding: 20px;
-		border:2px dashed var(--easy-primary) !important;
-  		background-color: var(--easy-bg-surface);
-  		border-radius: var(--easy-max-radius);
+		border: 2px dashed var(--easy-primary) !important;
+		background-color: var(--easy-bg-surface);
+		border-radius: var(--easy-max-radius);
 	}
 	#field-palette {
 		width: 280px;

@@ -4,6 +4,7 @@
 namespace App\Capture\Entity;
 
 use App\Capture\Repository\FormCaptureRepository;
+use App\Capture\Enum\CaptureElementTypeEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Capture\Interface\RenderableInterface;
@@ -79,4 +80,8 @@ class FormCapture extends CaptureElement
         return new \App\Capture\Entity\FormCaptureRenderer($this);
     }
 
+    public function getType(): CaptureElementTypeEnum
+    {
+        return CaptureElementTypeEnum::FORM;
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Capture\Entity;
 
 use App\Global\Entity\ParticipantRole;
+use App\Capture\Enum\CaptureElementTypeEnum;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use App\Capture\Interface\RenderableInterface;
@@ -34,6 +35,9 @@ abstract class CaptureElement
 
     #[ORM\ManyToOne]
     protected ?ParticipantRole $validatorRole = null;
+
+    #[ORM\ManyToOne(inversedBy: 'questions')]
+    private ?Category $category = null;
 
     #[ORM\Column(type: 'text', nullable: true)]
     protected ?string $renderTemplate = null;
@@ -133,6 +137,13 @@ abstract class CaptureElement
 
     abstract protected function getRenderable(): ?RenderableInterface;
 
+    abstract public function getType(): CaptureElementTypeEnum;
+
+    public function getTypeLabel(): string
+    {
+        return $this->getType()->label();
+    }
+
     public function render(array $context): string
     {
         foreach ($this->getResults() as $result) {
@@ -202,5 +213,17 @@ abstract class CaptureElement
             $this instanceof FormCapture => 'app_form_capture_edit',
             default => throw new \LogicException('Type de d\élément de capture non pris en charge'),
         };
+    }
+
+    public function getCategory(): ?Category
+    {
+        return $this->category;
+    }
+
+    public function setCategory(?Category $category): static
+    {
+        $this->category = $category;
+
+        return $this;
     }
 }

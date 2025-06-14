@@ -3,6 +3,7 @@
 namespace App\Capture\Form;
 
 use App\Global\Entity\ParticipantRole;
+use App\Capture\Entity\Category;
 use App\Global\Repository\ParticipantRoleRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -43,6 +44,15 @@ class CaptureElementType extends AbstractType
                 'choices' => $this->roleRepository->findBy(['isInternal' => true]),
                 'choice_label' => 'name',
                 'label' => 'Rôle du validateur',
+            ])
+            ->add('category', EntityType::class, [
+                'class' => Category::class,
+                'label' => 'Catégorie',
+                'choice_label' => 'name',
+                'placeholder' => 'Choisir une catégorie',
+                'required' => false,
+                'attr' => ['class' => 'form-select'],
+                'row_attr' => ['class' => 'mb-3'],
             ])
             ->add('description', TextareaType::class, [
                 'label' => 'Description',

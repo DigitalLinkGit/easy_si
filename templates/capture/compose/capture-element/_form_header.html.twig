@@ -1,0 +1,23 @@
+<div class="row">
+	<div class="col-md-3">
+		{{ form_row(form.name) }}
+	</div>
+	<div class="col-md-3">
+		{{ form_row(form.respondentRole) }}
+	</div>
+	<div class="col-md-3">
+		{{ form_row(form.validatorRole) }}
+	</div>
+	<div class="col-md-3">
+		{{ form_row(form.category) }}
+	</div>
+</div>
+{{ form_row(form.description) }}
+{#
+<a href="{{ path('app_capture_element_preview', { id: form.id.vars.value }) }}"
+   class="btn btn-sm btn-outline-primary"
+   data-bs-toggle="modal"
+   data-bs-target="#previewModal{{ quiz.id }}">
+   Prévisualiser
+</a>
+#}

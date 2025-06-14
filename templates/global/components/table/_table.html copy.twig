@@ -1,36 +1,41 @@
-{# Composant générique de tableau avec filtres et actions #}
+{# INDEX TABLE COMPONENT #}
 
 {% set items = items is defined ? items : [] %}
 {% set columns = columns is defined ? columns : [] %}
 {% set headers = headers is defined ? headers : null %}
-{% set with_actions = with_actions is defined ? with_actions : false %}
 {% set base_route = base_route is defined ? base_route : null %}
-{% set filter = filter is defined ? filter : false %}
 {% set table_id = 'table_' ~ random() %}
-{% set sort = sort is defined ? sort : false %}
 
-{# Tableau #}
+
+{# Actions #}
+{% set filter = filter is defined ? filter : false %}
+{% set sort = sort is defined ? sort : false %}
+{% set show = show is defined ? show : false %}
+{% set edit = edit is defined ? edit : false %}
+{% set delete = delete is defined ? delete : false %}
+{% set add = add is defined ? add : false %}
+
+{% if add and not filter %}
+	{% include 'global/components/button/_btn_new.html.twig' %}	
+{% endif %}
+
+{# Table #}
 <table class="table table-hover align-middle" id="{{ table_id }}">
 	<thead class="table-light">
 		<tr>
 			{% for header in headers %}
 				<th>{{ header }}</th>
 			{% endfor %}
-			{% if with_actions %}
-				<th>
-					{% if not filter %}
-						{% include 'components/button/_btn_new.html.twig' with { route_new: base_route ~ '_new' } %}
-					{% endif %}
-				</th>
+			{% if show or edit or delete %}
+				<th></th>
 			{% endif %}
 		</tr>
-
 		{% if filter or sort %}
 			<tr class="filter-row">
 				{% for column in columns %}
 					{% set column_index = loop.index0 %}
 					<td class="position-relative">
-            <div class="d-flex gap-1">
+						<div class="d-flex gap-1">
 							{% if filter %}
 								<input type="text" class="form-control form-control-sm filter" placeholder="Filtrer {{ headers[column_index] ?? column }}" oninput="filterTable(this)" data-filter-column="{{ column_index }}" data-table-id="{{ table_id }}">
 							{% endif %}
@@ -39,35 +44,42 @@
 									<i class="bi bi-sort-alpha-down"></i>
 								</button>
 							{% endif %}
-              </div>
+						</div>
 					</td>
 				{% endfor %}
-				{% if with_actions %}
-					<td>
-						{% include 'components/button/_btn_new.html.twig' with { route_new: base_route ~ '_new' } %}
-					</td>
+				{% if show or edit or delete %}
+				<td class="table-actions">
+					{% if add %}
+						{% include 'global/components/button/_btn_new.html.twig' %}	
+					{% endif %}
+				</td>
 				{% endif %}
 			</tr>
 		{% endif %}
 	</thead>
-
 	<tbody>
 		{% for item in items %}
 			<tr>
 				{% for property in columns %}
 					<td>{{ attribute_chain(item, property) }}</td>
 				{% endfor %}
-				{% if with_actions %}
+				{% if show or edit or delete or select %}
 					<td class="text-nowrap btn-fixed-width">
-						{% include 'components/button/_btn_icon_show.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
-						{% include 'components/button/_btn_icon_edit.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
-						{% include 'components/button/_btn_icon_delete.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
+						{% if show %}
+							{% include 'global/components/button/_btn_icon_show.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
+						{% endif %}
+						{% if edit %}
+							{% include 'global/components/button/_btn_icon_edit.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
+						{% endif %}
+						{% if delete %}
+							{% include 'global/components/button/_btn_icon_delete.html.twig' with { base_route: base_route, id: attribute(item, 'id') } %}
+						{% endif %}
 					</td>
 				{% endif %}
 			</tr>
 		{% else %}
 			<tr>
-				<td colspan="{{ columns|length + (with_actions ? 1 : 0) }}" class="text-muted text-center">
+				<td colspan="{{ columns|length + 1 }}" class="text-muted text-center">
 					Aucun élément à afficher.
 				</td>
 			</tr>

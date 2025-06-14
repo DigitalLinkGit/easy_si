@@ -12,15 +12,28 @@
 
 	{% include 'global/components/table/_table.html.twig' with {
     items: questions,
-    columns: ['name', 'content', 'category.name'],
-    headers: ['Nom', 'Intitulé', 'Categorie'],
-    filter:true,
-    sort:true,
-    show:true,
-    edit:true,
-    delete:true,
-    add:true,
-    base_route: 'app_question'
-    } %}
+    columns: ['name', 'content', 'type'],
+    headers: ['Nom', 'Intitulé', 'Type'],
+    filter: true,
+    sort: true,
+    actions: {
+        show:  {
+            route: 'app_question_show',
+            param_map: { id: 'id' }
+        },
+        edit:  {
+            route: 'app_question_edit',
+            param_map: { id: 'id' }
+        },
+        delete: {
+            route: 'app_question_delete',
+            param_map: { id: 'id' }
+        },
+        add: {
+            route: 'app_question_new',
+            params: { quizId: 'quiz.id' }
+        }
+    }
+} %} 
 </div>
 {% endblock %}

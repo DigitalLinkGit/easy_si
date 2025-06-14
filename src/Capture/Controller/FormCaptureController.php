@@ -67,4 +67,17 @@ class FormCaptureController extends AbstractController
 
         return $this->redirectToRoute('app_form_capture_index');
     }
+
+    #[Route('/{id}', name: 'app_form_capture_show', methods: ['GET'])]
+    public function show(FormCapture $formCapture): Response
+    {
+        $form = $this->createForm(FormCaptureType::class, $formCapture, [
+            'disabled' => true,
+        ]);
+
+        return $this->render('capture/compose/form_capture/show.html.twig', [
+            'form_capture' => $formCapture,
+            'form' => $form->createView(),
+        ]);
+    }
 }

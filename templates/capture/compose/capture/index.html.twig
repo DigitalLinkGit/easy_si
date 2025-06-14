@@ -9,17 +9,27 @@
     title: 'Captures :'
     } %}
 
-	{% include 'global/components/table/_table.html.twig' with {
+    {% include 'global/components/table/_table.html.twig' with {
     items: captures,
     columns: ['name', 'description'],
     headers: ['Nom', 'Description'],
-    filter:true,
-    sort:true,
-    show:true,
-    edit:true,
-    delete:true,
-    add:true,
-    base_route: 'app_capture'
-    } %}
+    filter: true,
+    sort: true,
+    actions: {
+        show:  {
+            route: 'app_capture_show',
+            param_map: { id: 'id' }
+        },
+        edit:  {
+            route: 'app_capture_edit',
+            param_map: { id: 'id' }
+        },
+        delete: {
+            route: 'app_capture_delete',
+            param_map: { id: 'id' }
+        },
+        add: {route: 'app_capture_new'}
+    }
+} %}
 </div>
 {% endblock %}

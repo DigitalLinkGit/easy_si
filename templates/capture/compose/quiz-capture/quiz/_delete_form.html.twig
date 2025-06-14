@@ -1,9 +1,0 @@
-<form method="post"
-      action="{{ path('app_quiz_delete', {'id': quiz.id}) }}"
-      onsubmit="return confirm('Supprimer cette quiz ?');"
-      class="d-inline">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ quiz.id) }}">
-    <button class="btn btn-sm btn-outline-danger btn-icon" title="Supprimer">
-        <i class="bi bi-trash"></i>
-    </button>
-</form>

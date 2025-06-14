@@ -3,9 +3,10 @@
 namespace App\Capture\Controller;
 
 use App\Capture\Entity\QuizCapture;
-use App\Capture\Entity\QuestionInstance;
+use App\Capture\Entity\Question;
 use App\Capture\Entity\Condition;
 use App\Capture\Form\QuizCaptureType;
+use App\Capture\Form\QuestionType;
 use App\Capture\Form\PreviewType;
 use App\Capture\Repository\QuizCaptureRepository;
 use App\Capture\Repository\QuestionRepository;
@@ -44,17 +45,11 @@ final class QuizCaptureController extends AbstractController
             $em->persist($quiz);
             $em->flush();
 
-            return $this->redirectToRoute('app_quiz_edit', [
-                'quiz' => $quiz,
-                'form' => $form,
-                'id' => $quiz->getId(),
-            ]);
+            return $this->redirectToRoute('app_quiz_edit', ['id' => $quiz->getId()]);
         }
-        $graphData = $graphBuilder->buildForSection($quiz, $qiRepo);
         return $this->render('capture/compose/quiz-capture/quiz/new.html.twig', [
-            'quiz' => $quiz,
+            'questions'=> $quiz->getQuestions(),
             'form' => $form,
-            'graphData' => $graphData,
         ]);
     }
 
@@ -72,7 +67,7 @@ final class QuizCaptureController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_quiz_edit')]
-    public function edit(Request $request, QuestionInstanceRepository $qiRepo, GraphBuilder $graphBuilder, QuizCapture $quiz, EntityManagerInterface $em): Response
+    public function edit(Request $request, QuizCapture $quiz, EntityManagerInterface $em): Response
     {
         $form = $this->createForm(QuizCaptureType::class, $quiz);
         $form->handleRequest($request);
@@ -83,24 +78,17 @@ final class QuizCaptureController extends AbstractController
             return $this->redirectToRoute('app_quiz_edit', ['id' => $quiz->getId()]);
         }
 
-        $instances = $quiz->getQuestionsInstances();
+        $questions = $quiz->getQuestions();
 
-        foreach ($instances as $instance) {
-            $instance->getQuestion()->getProposals()->count(); // force le chargement des propositions
-            $instance->getConditions()->count(); // force le chargement des conditions
+        foreach ($questions as $question) {
+            $question->getProposals()->count(); // force le chargement des propositions
         }
-        $graphData = $graphBuilder->buildForSection($quiz, $qiRepo);
-        $sorted = iterator_to_array($instances);
-        usort($sorted, fn($a, $b) => $a->getId() <=> $b->getId());
-
-        $previewForm = $this->createForm(PreviewType::class, $quiz);
 
         return $this->render('capture/compose/quiz-capture/quiz/edit.html.twig', [
-            'quiz' => $quiz,
             'form' => $form->createView(),
-            'graphData' => $graphData,
-            'instances' => $instances,
-            'previewForm' => $previewForm->createView(),
+            'questions'=>$questions,
+            'quiz'=>$quiz,
+
         ]);
     }
 
@@ -114,7 +102,7 @@ final class QuizCaptureController extends AbstractController
 
         return $this->redirectToRoute('app_quiz_index');
     }
-
+    /*
     #[Route('/{quizId}/add-question', name: 'app_quiz_add_question')]
     public function addQuestion(Request $request, int $quizId, EntityManagerInterface $em, QuizCaptureRepository $quizRepo, QuestionRepository $questionRepo, CategoryRepository $categoryRepo): Response
     {
@@ -161,7 +149,8 @@ final class QuizCaptureController extends AbstractController
             'proposalId' => $request->query->get('proposalId'),
         ]);
     }
-
+    */
+    /*
     #[Route('/{quizId}/attach-question', name: 'app_quiz_attach_question_instance')]
     public function linkQuestion(int $quizId, Request $request, EntityManagerInterface $em, QuizCaptureRepository $quizRepo, QuestionRepository $questionRepo, QuestionInstanceRepository $instanceRepo, ProposalRepository $proposalRepo): Response
     {
@@ -179,7 +168,7 @@ final class QuizCaptureController extends AbstractController
         $proposalId = $request->query->get('proposalId');
         //dd($proposalId);
 
-        $newInstance = new QuestionInstance();
+        $newInstance = new Question();
         $newInstance->setQuiz($quiz);
         $newInstance->setQuestion($question);
 
@@ -305,8 +294,7 @@ final class QuizCaptureController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-
-
+    */
     /* TEST TUTO
     #[Route('/new', name: 'app_quiz_new', methods: ['GET', 'POST'])]
     public function new(Request $request, QuestionInstanceRepository $qiRepo, GraphBuilder $graphBuilder, EntityManagerInterface $em, TutorialRepository $tutorialRepository): Response

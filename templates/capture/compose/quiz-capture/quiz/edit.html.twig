@@ -6,60 +6,60 @@
 {% block body %}
 	{% include 'global/partials/_page_header.html.twig' with {
     route_return: 'app_quiz_index',
-    title: 'Modifier une quiz'
+    title: 'Modifier un quiz'
     } %}
 
 	{{ include('capture/compose/quiz-capture/quiz/_form.html.twig') }}
-	<a href="{{ path('app_capture_element_preview', { id: quiz.id }) }}" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#previewModal{{ quiz.id }}">
-		Prévisualiser
-	</a>
+	
 
-	<div class="mt-4">
-		<ul class="nav nav-tabs" id="quizTabs" role="tablist">
-			<li class="nav-item" role="presentation">
-				<button class="nav-link active" id="graph-tab" data-bs-toggle="tab" data-bs-target="#graph" type="button" role="tab" aria-controls="graph" aria-selected="true">
-					Graphe conditionnel
-				</button>
-			</li>
-			<li class="nav-item" role="presentation">
-				<button class="nav-link" id="questions-tab" data-bs-toggle="tab" data-bs-target="#questions" type="button" role="tab" aria-controls="questions" aria-selected="false">
-					Questions
-				</button>
-			</li>
-		</ul>
-
-		<div class="tab-content border border-top-0 p-4" id="quizTabsContent">
-			<div class="tab-pane fade show active" id="graph" role="tabpanel" aria-labelledby="graph-tab">
-				{% include 'global/components/graph/_graph.html.twig' with {
-        graphData: graphData,
-        height: 600
-      } %}
-			</div>
-			<div class="tab-pane fade" id="questions" role="tabpanel" aria-labelledby="questions-tab">
-				{% include 'capture/compose/quiz-capture/quiz/questions_vertical_cards.html.twig' %}
+	{#
+		<div class="mt-4">
+			<ul class="nav nav-tabs" id="quizTabs" role="tablist">
+				<li class="nav-item" role="presentation">
+					<button class="nav-link active" id="graph-tab" data-bs-toggle="tab" data-bs-target="#graph" type="button" role="tab" aria-controls="graph" aria-selected="true">
+						Graphe conditionnel
+					</button>
+				</li>
+				<li class="nav-item" role="presentation">
+					<button class="nav-link" id="questions-tab" data-bs-toggle="tab" data-bs-target="#questions" type="button" role="tab" aria-controls="questions" aria-selected="false">
+						Questions
+					</button>
+				</li>
+			</ul>
+	
+			<div class="tab-content border border-top-0 p-4" id="quizTabsContent">
+				<div class="tab-pane fade show active" id="graph" role="tabpanel" aria-labelledby="graph-tab">
+					{% include 'global/components/graph/_graph.html.twig' with {
+	        graphData: graphData,
+	        height: 600
+	      } %}
+				</div>
+				<div class="tab-pane fade" id="questions" role="tabpanel" aria-labelledby="questions-tab">
+					{% include 'capture/compose/quiz-capture/quiz/questions_vertical_cards.html.twig' %}
+				</div>
 			</div>
 		</div>
-	</div>
-
-	<div class="modal fade" id="previewModal{{ quiz.id }}" tabindex="-1" aria-labelledby="previewModalLabel{{ quiz.id }}" aria-hidden="true">
-		<div class="modal-dialog modal-lg modal-dialog-scrollable">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="previewModalLabel{{ quiz.id }}">Prévisualisation :
-						{{ quiz.name }}</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
-				</div>
-				<div class="modal-body p-4">
+	
+		<div class="modal fade" id="previewModal{{ quiz.id }}" tabindex="-1" aria-labelledby="previewModalLabel{{ quiz.id }}" aria-hidden="true">
+			<div class="modal-dialog modal-lg modal-dialog-scrollable">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="previewModalLabel{{ quiz.id }}">Prévisualisation :
+							{{ quiz.name }}</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+					</div>
 					<div class="modal-body p-4">
-						{{ include('capture/compose/capture-element/preview_modal.html.twig', {
-							element: quiz,
-							rendered: quiz.render([])
-						}) }}
+						<div class="modal-body p-4">
+							{{ include('capture/compose/capture-element/preview_modal.html.twig', {
+								element: quiz,
+								rendered: quiz.render([])
+							}) }}
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+		#}
 
 
 {% endblock %}

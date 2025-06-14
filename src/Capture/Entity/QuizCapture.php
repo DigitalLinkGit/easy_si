@@ -4,6 +4,7 @@ namespace App\Capture\Entity;
 
 use App\Capture\Repository\QuizCaptureRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use App\Capture\Enum\CaptureElementTypeEnum;
 use Doctrine\Common\Collections\Collection;
 use App\Capture\Interface\RenderableInterface;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,45 +13,45 @@ use Doctrine\ORM\Mapping as ORM;
 class QuizCapture extends CaptureElement
 {
     /**
-     * @var Collection<int, QuestionInstance>
+     * @var Collection<int, Question>
      */
-    #[ORM\OneToMany(targetEntity: QuestionInstance::class, mappedBy: 'quiz')]
-    private Collection $questionsInstances;
+    #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'quiz')]
+    private Collection $questions;
 
     public function __construct()
     {
-        $this->questionsInstances = new ArrayCollection();
+        $this->questions = new ArrayCollection();
     }
 
     /**
-     * @return Collection<int, QuestionInstance>
+     * @return Collection<int, Question>
      */
-    public function getQuestionsInstances(): Collection
+    public function getQuestions(): Collection
     {
-        return $this->questionsInstances;
+        return $this->questions;
     }
 
-    public function addQuestionsInstance(QuestionInstance $questionsInstance): static
+    public function addQuestionsInstance(Question $questions): static
     {
-        if (!$this->questionsInstances->contains($questionsInstance)) {
-            $this->questionsInstances->add($questionsInstance);
-            $questionsInstance->setQuiz($this);
+        if (!$this->questions->contains($questions)) {
+            $this->questions->add($questions);
+            $questions->setQuiz($this);
         }
 
         return $this;
     }
-    public function removeQuestionInstance(QuestionInstance $instance): self
+    public function removeQuestionInstance(Question $question): self
     {
-        $this->questionsInstances->removeElement($instance);
+        $this->questions->removeElement($question);
         return $this;
     }
 
-    public function removeQuestionsInstance(QuestionInstance $questionsInstance): static
+    public function removeQuestionsInstance(Question $questions): static
     {
-        if ($this->questionsInstances->removeElement($questionsInstance)) {
+        if ($this->questions->removeElement($questions)) {
             // set the owning side to null (unless already changed)
-            if ($questionsInstance->getQuiz() === $this) {
-                $questionsInstance->setQuiz(null);
+            if ($questions->getQuiz() === $this) {
+                $questions->setQuiz(null);
             }
         }
 
@@ -58,11 +59,48 @@ class QuizCapture extends CaptureElement
     }
     public function getInterpolableVariables(): array
     {
-        return [];
+        $questionVariables = array_map(
+            fn(Question $q) => $q->getName(),
+            $this->getQuestions()->toArray()
+        );
+
+        $resultVariables = array_map(
+            fn(RenderResult $r) => $r->getName(),
+            $this->getResults()->toArray()
+        );
+
+        return array_merge($questionVariables, $resultVariables);
+    }
+
+    public function addQuestion(Question $question): static
+    {
+        if (!$this->questions->contains($question)) {
+            $this->questions->add($question);
+            $question->setQuiz($this);
+        }
+
+        return $this;
+    }
+
+    public function removeQuestion(Question $question): static
+    {
+        if ($this->questions->removeElement($question)) {
+            // set the owning side to null (unless already changed)
+            if ($question->getQuiz() === $this) {
+                $question->setQuiz(null);
+            }
+        }
+
+        return $this;
     }
 
     public function getRenderable(): ?RenderableInterface
     {
-        return null;
+        return new \App\Capture\Entity\QuizCaptureRenderer($this);
+    }
+
+    public function getType(): CaptureElementTypeEnum
+    {
+        return CaptureElementTypeEnum::QUIZ;
     }
 }
