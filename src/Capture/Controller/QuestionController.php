@@ -3,6 +3,7 @@
 namespace App\Capture\Controller;
 
 use App\Capture\Entity\Question;
+use App\Capture\Entity\QuizCapture;
 use App\Capture\Form\QuestionType;
 use App\Capture\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,7 +28,22 @@ final class QuestionController extends AbstractController
     #[Route('/new', name: 'app_question_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $em, LoggerInterface $logger): Response
     {
+        $quizId = $request->query->getInt('quizId');
+
+        if (!$quizId) {
+            throw $this->createNotFoundException('Paramètre "quizId" requis.');
+        }
+
+        // Optionnel : charger l'objet Quiz pour l'attacher à la Question
+        /** @var QuizCapture|null $quiz */
+        $quiz = $em->getRepository(QuizCapture::class)->find($quizId);
+        if (!$quiz) {
+            throw $this->createNotFoundException("Quiz #$quizId introuvable.");
+        }
+
         $question = new Question();
+        $question->setQuiz($quiz); // ← on rattache directement
+
         $form = $this->createForm(QuestionType::class, $question);
         $form->handleRequest($request);
 
@@ -42,7 +58,7 @@ final class QuestionController extends AbstractController
                     $em->flush();
 
                     $this->addFlash('success', 'Question créée avec succès.');
-                    return $this->redirectToRoute('app_question_index');
+                    return $this->redirectToRoute('app_quiz_edit', ['id' => $quizId]);
                 } catch (\Throwable $e) {
                     $logger->error('Erreur lors de la création de la question : ' . $e->getMessage(), ['exception' => $e]);
                     $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement.');
@@ -56,6 +72,7 @@ final class QuestionController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
 
     #[Route('/{id}', name: 'app_question_show', methods: ['GET'])]
     public function show(Question $question): Response
@@ -89,42 +106,18 @@ final class QuestionController extends AbstractController
         return $this->render('capture/compose/quiz-capture/question/edit.html.twig', [
             'question' => $question,
             'form' => $form->createView(),
+            'quizId' => $question->getQuiz()->getId(),
         ]);
     }
 
     #[Route('/{id}', name: 'app_question_delete', methods: ['POST'])]
-    public function delete(
-        Request $request,
-        Question $question,
-        EntityManagerInterface $em,
-        LoggerInterface $logger
-    ): Response {
-        $id = $question->getId();
-
-        if ($this->isCsrfTokenValid('delete' . $id, $request->request->get('_token'))) {
-            try {
-                $em->remove($question);
-                $em->flush();
-
-                $this->addFlash('success', 'La question a été supprimée avec succès.');
-            } catch (ForeignKeyConstraintViolationException $e) {
-                $logger->warning("Suppression impossible : la question $id est utilisée ailleurs.", [
-                    'exception' => $e,
-                ]);
-
-                // Vérification manuelle dans les QuestionInstance par exemple
-                $usages = $question->getInstances(); // Assuming mappedBy="question"
-                if (count($usages) > 0) {
-                    $sectionNames = array_map(fn($instance) => $instance->getSection()?->getName(), $usages->toArray());
-                    $sectionList = implode(', ', array_filter($sectionNames));
-
-                    $this->addFlash('danger', "Impossible de supprimer cette question : elle est utilisée dans la ou les section(s) : {$sectionList}.");
-                } else {
-                    $this->addFlash('danger', 'Impossible de supprimer cette question : elle est utilisée ailleurs dans le système.');
-                }
-            }
+    public function delete(Request $request, Question $question, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete' . $question->getId(), $request->getPayload()->getString('_token'))) {
+            $entityManager->remove($question);
+            $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_question_index');
+        return $this->redirectToRoute('app_question_index', [], Response::HTTP_SEE_OTHER);
     }
 }

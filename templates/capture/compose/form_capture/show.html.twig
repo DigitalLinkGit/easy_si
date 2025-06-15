@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Formulaire de capture{% endblock %}
+
+{% block body %}
+    {% include 'global/partials/_page_header.html.twig' with {
+    route_return: 'app_form_capture_index',
+    title: 'Formulaire de capture :'
+    } %}
+
+	{% include 'global/components/table/_table_show.html.twig' with { form: form } %}
+{% endblock %}

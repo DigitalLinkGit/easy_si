@@ -1,0 +1,57 @@
+{{ form_start(form) }}
+<div class="row d-flex">
+	<div class="col-8">
+		{{ form_row(form.name) }}
+	</div>
+	<div class="col-4">
+		{{ form_row(form.status) }}
+	</div>
+</div>
+{{ form_row(form.description) }}
+
+{% include 'global/components/button/_btn_bar.html.twig' with {
+    buttons: {
+        respond_solo: {
+            type: 'link',
+            route: 'app_project_respond_solo',
+            param_map: { id: 'project.id' },
+            icon: 'bi-pencil',
+            label: 'Répondre aux captures',
+            class: 'btn btn-outline-primary btn-sm'
+        },
+        back: {
+            type: 'link',
+            route: 'app_project_index',
+            icon: 'bi-arrow-left',
+            label: 'Retour',
+            class: 'btn btn-outline-primary btn-sm'
+        },
+        save: {
+            type: 'submit',
+            icon: 'bi-check',
+            label: 'Enregistrer',
+            class: 'btn btn-primary btn-sm'
+        }
+    }
+} %}
+
+<ul class="nav nav-tabs mb-3">
+	<li class="nav-item">
+		<a class="nav-link active" data-bs-toggle="tab" href="#roles">Rôles</a>
+	</li>
+	<li class="nav-item">
+		<a class="nav-link" data-bs-toggle="tab" href="#captures">Captures</a>
+	</li>
+</ul>
+
+<div class="tab-content">
+	<div id="roles" class="tab-pane fade show active">
+		{{ include('global/project/_participants_tab.html.twig') }}
+	</div>
+	<div id="captures" class="tab-pane fade">
+		{{ include('global/project/_captures_tab.html.twig') }}
+	</div>
+</div>
+
+
+{{ form_end(form) }}

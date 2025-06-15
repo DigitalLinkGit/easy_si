@@ -5,43 +5,102 @@
 
 {% block body %}
 	{% include 'global/partials/_page_header.html.twig' with {
-    route_return: 'app_capture_index',
     title: 'Capture :'
-    } %}
+  } %}
 
 	{{ include('capture/compose/capture/_form.html.twig') }}
 
+	<div class="form-container container-fluid p-3 mt-4">
+		<div class="row gx-4">
+			<div class="col-md-8">
+				<div class="form-block">
+					<h5 class="mb-3">Éléments de capture</h5>
+					<div id="capture-element-dropzone" class="p-3 drop-zone" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+						{% for element in capture.elements %}
+							<div class="border rounded p-2 mb-2 d-flex align-items-center gap-3">
 
-	<div class="border rounded p-3 mt-4">
-		<div class="d-flex justify-content-between align-items-center mb-3">
-			<h5 class="mb-0">Éléments de capture</h5>
-			<a href="{{ path('app_quiz_index', { captureId: capture.id }) }}" class="btn btn-sm btn-outline-primary">
-				<i class="bi bi-plus-circle"></i>
-				Ajouter un élément
-			</a>
-		</div>
+								<div class="flex-fill">
+									<div class="d-flex align-items-center gap-2">
+										<strong>{{ element.name }}</strong>
+										<span class="badge">
+											{{ element.getTypeLabel() }}
+										</span>
+									</div>
+									<small class="text-muted">{{ element.description }}</small>
+								</div>
 
-		{% for element in capture.elements %}
-			<div class="border rounded d-flex align-items-center p-2 mb-2 gap-3">
-				<div class="flex-fill">
-					<strong>{{ element.name }}</strong><br>
-					<small class="text-muted">{{ element.description }}</small>
-				</div>
-				<div class="d-flex gap-2">
-					<a href="{{ path('app_quiz_show', { id: element.id }) }}" class="btn btn-outline-primary btn-sm" title="Afficher">
-						<i class="bi bi-eye"></i>
-					</a>
-					<a href="{{ path('app_quiz_edit', { id: element.id }) }}" class="btn btn-outline-secondary btn-sm" title="Modifier">
-						<i class="bi bi-pencil"></i>
-					</a>
-					<a href="{{ path('app_capture_delete_element', { id: capture.id, elementId: element.id }) }}" class="btn btn-outline-danger btn-sm" onclick="return confirm('Supprimer cet élément ?');" title="Supprimer">
-						<i class="bi bi-trash"></i>
-					</a>
+								<div class="d-flex gap-2">
+									<a href="{{ path(element.editRouteName, { id: element.id }) }}" class="btn btn-outline-primary btn-sm">
+										<i class="bi bi-pencil"></i>
+									</a>
+									<a href="{{ path('app_capture_delete_element', { id: capture.id, elementId: element.id }) }}" class="btn btn-outline-primary btn-sm" onclick="return confirm('Supprimer cet élément ?');" title="Supprimer">
+										<i class="bi bi-trash"></i>
+									</a>
+								</div>
+							</div>
+						{% else %}
+							<div class="text-muted">Aucun élément associé</div>
+						{% endfor %}
+					</div>
+
+
 				</div>
 			</div>
-		{% else %}
-			<div class="text-muted">Aucun élément associé</div>
-		{% endfor %}
+
+			<div class="col-md-4">
+				<div class="form-block">
+					<h5 class="mb-3">Bibliothèque d’éléments</h5>
+					<div id="element-library" class="p-3 border rounded" style="max-height: 600px; overflow-y: auto;">
+						{% for element in availableElements %}
+							<div class="p-2 mb-2 draggable-element" draggable="true" data-id="{{ element.id }}" ondragstart="handleDragStart(event)">
+								<div class="d-flex align-items-center gap-2">
+									<strong>{{ element.name }}</strong>
+									<span class="badge">
+										{{ element.getTypeLabel() }}
+									</span>
+								</div>
+								<small class="text-muted">{{ element.description }}</small>
+							</div>
+						{% else %}
+							<div class="text-muted">Aucun élément disponible</div>
+						{% endfor %}
+					</div>
+
+				</div>
+			</div>
+		</div>
 	</div>
 
+
+	<script>
+		let draggedElementId = null;
+
+function handleDragStart(event) {
+draggedElementId = event.target.dataset.id;
+}
+
+function handleDragOver(event) {
+event.preventDefault();
+}
+
+function handleDrop(event) {
+event.preventDefault();
+if (! draggedElementId) 
+return;
+
+
+
+const captureId = {{ capture.id }};
+const url = `/capture/${captureId}/add-element/${draggedElementId}`;
+
+fetch(url).then(response => {
+if (!response.ok) 
+throw new Error("Erreur lors de l'ajout");
+
+
+
+return response.text();
+}).then(() => location.reload()).catch(err => alert(err.message));
+}
+	</script>
 {% endblock %}

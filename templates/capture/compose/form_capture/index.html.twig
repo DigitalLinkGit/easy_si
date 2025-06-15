@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Form Capture
+{% endblock %}
+
+{% block body %}
+<div class="container my-4">
+	{% include 'global/partials/_page_header.html.twig' with {
+    title: 'Formulaire de capture :'
+    } %}
+
+    {% include 'global/components/table/_table.html.twig' with {
+    items: form_captures,
+    columns: ['name', 'description'],
+    headers: ['Nom', 'Description'],
+    filter: true,
+    sort: true,
+    actions: {
+        show:  {
+            route: 'app_form_capture_show',
+            param_map: { id: 'id' }
+        },
+        edit:  {
+            route: 'app_form_capture_edit',
+            param_map: { id: 'id' }
+        },
+        delete: {
+            route: 'app_form_capture_delete',
+            param_map: { id: 'id' }
+        },
+        add: {route: 'app_form_capture_new'}
+    }
+} %} 
+{% endblock %}

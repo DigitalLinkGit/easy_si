@@ -1,33 +1,66 @@
 {{ form_start(form) }}
 
-<div class="row mb-3">
-	<div class="col-md-8">
-		{{ form_row(form.name, {
-      label: 'Nom',
-      label_attr: { class: 'form-label fw-semibold small' },
-      attr: { class: 'form-control form-control-sm' }
-    }) }}
+<div class="form-container mb-4 p-3">
+  <div class="row d-flex">
+    <div class="col-md-8">
+      {{ form_row(form.name, {
+        label: 'Nom',
+        label_attr: { class: 'form-label fw-semibold small' },
+        attr: { class: 'form-control form-control-sm' }
+      }) }}
 
-		{{ form_row(form.description, {
-      label: 'Description',
-      label_attr: { class: 'form-label fw-semibold small' },
-      attr: { class: 'form-control', rows: 4 }
-    }) }}
-	</div>
+      {{ form_row(form.description, {
+        label: 'Description',
+        label_attr: { class: 'form-label fw-semibold small' },
+        attr: { class: 'form-control', rows: 4 }
+      }) }} 
 
+      {{ form_row(form.renderTitle, {
+        label: 'Nom du document final',
+        label_attr: { class: 'form-label fw-semibold small' },
+        attr: { class: 'form-control', rows: 4 }
+      }) }}
+    </div>
 
-	<div class="border rounded p-3 mt-4 col-md-4">
-		<h5 class="mb-3">Rôles nécessaires</h5>
-		<ul class="list-group list-group-sm">
-			{% for role in capture.allRolesFromElements %}
-				<li class="list-group-item">{{ role.name }}</li>
-			{% else %}
-				<li class="list-group-item text-muted">Aucun rôle identifié</li>
-			{% endfor %}
-		</ul>
-	</div>
+    <div class="col-md-4 d-flex flex-column">
+      <label class="form-label fw-semibold small">Rôles nécessaires</label>
+      <div class="border rounded p-3" style="flex: 1;">
+        <ul class="list-group list-group-sm mb-0">
+          {% for role in capture.allRolesFromElements %}
+            <li class="list-group-item py-1">{{ role.name }}</li>
+          {% else %}
+            <li class="list-group-item py-1 text-muted">Aucun rôle identifié</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
 </div>
 
+{% include 'global/components/button/_btn_bar.html.twig' with {
+    buttons: {
+        render_edit: {
+            type: 'link',
+            route: 'app_capture_preview',
+            param_map: { id: 'capture.id' },
+            icon: 'bi-eye',
+            label: 'Aperçu du rendu',
+            class: 'btn btn-outline-primary btn-sm'
+        },
+        back: {
+            type: 'link',
+            route: 'app_capture_index',
+            icon: 'bi-arrow-left',
+            label: 'Retour',
+            class: 'btn btn-outline-primary btn-sm'
+        },
+        save: {
+            type: 'submit',
+            icon: 'bi-check',
+            label: 'Enregistrer',
+            class: 'btn btn-primary btn-sm'
+        }
+    }
+} %}
 
-{{ include('global/components/button/_btn_save.html.twig') }}
 {{ form_end(form) }}

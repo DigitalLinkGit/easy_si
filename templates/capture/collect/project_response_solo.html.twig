@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Répondre au projet (mode solo)
+{% endblock %}
+
+{% block body %}
+	<h2 class="mb-4">Réponse au projet :
+		{{ project.name }}</h2>
+
+	{{ form_start(form) }}
+
+	<div class="form-container">
+		{% for child in form %}
+			<div class="mb-4 p-3 border rounded">
+				{{ form_widget(child) }}
+			</div>
+		{% endfor %}
+	</div>
+
+	<button class="btn btn-primary mt-3">Enregistrer</button>
+	{{ form_end(form) }}
+{% endblock %}

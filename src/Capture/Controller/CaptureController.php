@@ -3,6 +3,7 @@
 namespace App\Capture\Controller;
 
 use App\Capture\Entity\Capture;
+use App\Capture\Entity\CaptureElement;
 use App\Capture\Form\CaptureType;
 use App\Capture\Repository\QuizCaptureRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -15,6 +16,13 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/capture')]
 final class CaptureController extends AbstractController
 {
+    private CaptureElementRepository $captureElementRepository;
+
+    public function __construct(CaptureElementRepository $captureElementRepository)
+    {
+        $this->captureElementRepository = $captureElementRepository;
+    }
+
     #[Route(name: 'app_capture_index', methods: ['GET'])]
     public function index(EntityManagerInterface $entityManager): Response
     {
@@ -50,8 +58,10 @@ final class CaptureController extends AbstractController
     #[Route('/{id}', name: 'app_capture_show', methods: ['GET'])]
     public function show(Capture $capture): Response
     {
+        $form = $this->createForm(CaptureType::class, $capture, ['disabled' => true]);
         return $this->render('capture/compose/capture/show.html.twig', [
             'capture' => $capture,
+            'form' => $form,
         ]);
     }
 
@@ -66,10 +76,11 @@ final class CaptureController extends AbstractController
 
             return $this->redirectToRoute('app_capture_index', [], Response::HTTP_SEE_OTHER);
         }
-
+        $availableElements = $this->captureElementRepository->findAll();
         return $this->render('capture/compose/capture/edit.html.twig', [
             'capture' => $capture,
             'form' => $form,
+            'availableElements' => $availableElements,
         ]);
     }
 
@@ -87,19 +98,20 @@ final class CaptureController extends AbstractController
     #[Route('/{id}/add-element/{elementId}', name: 'app_capture_add_element', methods: ['GET'])]
     public function addElement(Capture $capture, int $elementId, QuizCaptureRepository $quizRepo, EntityManagerInterface $em): Response
     {
-        $quiz = $quizRepo->find($elementId);
-        if (!$quiz) {
-            throw $this->createNotFoundException('QuizCapture introuvable');
+        $element = $em->getRepository(CaptureElement::class)->find($elementId);
+        if (!$element) {
+            throw $this->createNotFoundException('Element introuvable');
         }
+        $capture->addElement($element);
 
-        $capture->addElement($quiz);
         $em->flush();
 
         return $this->redirectToRoute('app_capture_edit', ['id' => $capture->getId()]);
     }
 
-    #[Route('/capture/compose/capture/{id}/delete-element/{elementId}', name: 'app_capture_delete_element', methods: ['GET'])]
-    public function deleteElement(Capture $capture,int $elementId,CaptureElementRepository $elementRepo,EntityManagerInterface $em): Response {
+    #[Route('/{id}/delete-element/{elementId}', name: 'app_capture_delete_element', methods: ['GET'])]
+    public function deleteElement(Capture $capture, int $elementId, CaptureElementRepository $elementRepo, EntityManagerInterface $em): Response
+    {
         $element = $elementRepo->find($elementId);
         if (!$element) {
             throw $this->createNotFoundException('CaptureElement introuvable');
@@ -109,5 +121,13 @@ final class CaptureController extends AbstractController
         $em->flush();
 
         return $this->redirectToRoute('app_capture_edit', ['id' => $capture->getId()]);
+    }
+
+    #[Route('/{id}/preview', name: 'app_capture_preview', methods: ['GET'])]
+    public function preview(Capture $capture): Response
+    {
+        return $this->render('capture/compose/capture/preview.html.twig', [
+            'capture' => $capture,
+        ]);
     }
 }

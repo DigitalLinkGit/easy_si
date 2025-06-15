@@ -1,0 +1,72 @@
+<div class="form-container container-fluid p-3 mt-4">
+	<div class="row gx-4">
+		<div class="col-md-8">
+			<div class="form-block">
+				<h5 class="mb-3">Captures du projet</h5>
+				<div id="capture-dropzone" class="p-3 drop-zone" ondragover="handleDragOver(event)" ondrop="handleDrop(event)">
+					{% for instance in project.captureInstances %}
+						{% set capture = instance.capture %}
+						<div class="border rounded p-2 mb-2 d-flex align-items-center gap-3">
+							<div class="flex-fill">
+								<strong>{{ capture.name }}</strong>
+							</br>
+							<small class="text-muted">{{ capture.description }}</small>
+						</div>
+						<div class="d-flex gap-2">
+							<a href="{{ path('app_capture_edit', { id: capture.id }) }}" class="btn btn-outline-primary btn-sm">
+								<i class="bi bi-pencil"></i>
+							</a>
+							<a href="{{ path('app_project_delete_capture', { id: project.id, instanceId: instance.id }) }}" class="btn btn-outline-primary btn-sm" onclick="return confirm('Supprimer cette capture ?');">
+								<i class="bi bi-trash"></i>
+							</a>
+						</div>
+					</div>
+				{% else %}
+					<div class="text-muted">Aucune capture associée</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-4">
+		<div class="form-block">
+			<h5 class="mb-3">Bibliothèque de captures</h5>
+			<div id="capture-library" class="p-3 border rounded" style="max-height: 600px; overflow-y: auto;">
+				{% for capture in availableCaptures %}
+					<div class="p-2 mb-2 draggable-capture" draggable="true" data-id="{{ capture.id }}" ondragstart="handleDragStart(event)">
+						<strong>{{ capture.name }}</strong>
+						<small class="text-muted">{{ capture.description }}</small>
+					</div>
+				{% else %}
+					<div class="text-muted">Aucune capture disponible</div>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+</div></div><script>
+let draggedCaptureId = null;
+
+function handleDragStart(event) {
+draggedCaptureId = event.target.dataset.id;
+}
+
+function handleDragOver(event) {
+event.preventDefault();
+}
+
+function handleDrop(event) {
+event.preventDefault();
+if (! draggedCaptureId) 
+return;
+
+
+const projectId = {{ project.id }};
+const url = `/project/${projectId}/add-capture/${draggedCaptureId}`;
+
+fetch(url).then(response => {
+if (!response.ok) 
+throw new Error("Erreur lors de l'ajout");
+
+return response.text();
+}).then(() => location.reload()).catch(err => alert(err.message));
+}</script>

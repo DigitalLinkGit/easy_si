@@ -1,9 +1,11 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Role{% endblock %}
+{% block title %}Nouveau rôle{% endblock %}
 
 {% block body %}
-    <h2 class="section-title">Nouveau rôle</h2>
+    {% include 'global/partials/_page_header.html.twig' with {
+    title: 'Rôle :'
+    } %}
 
-    {{ include('role/_form.html.twig') }}
+    {{ include('global/role/_form.html.twig') }}
 {% endblock %}

@@ -4,6 +4,7 @@ namespace App\Capture\Service;
 
 use App\Capture\Repository\QuestionInstanceRepository;
 use App\Capture\Entity\QuizCapture;
+use App\Capture\Enum\AnswerType;
 use App\Capture\Entity\QuestionInstance;
 use App\Capture\Entity\Proposal;
 
@@ -42,7 +43,7 @@ class GraphBuilder
 
             foreach ($qi->getQuestion()->getProposals() as $proposal) {
 
-                if (!$qi->getQuestion()->isMultipleChoice() && !$qi->getNextQuestionInstance()) {
+                if($qi->getQuestion()->getType() === AnswerType::SINGLE_CHOICE && !$qi->getNextQuestionInstance()) {
 
                     $conditionablesByLevel[$level] = ($conditionablesByLevel[$level] ?? 0) + 1;
                     //Créer les propositions

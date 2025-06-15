@@ -1,3 +1,5 @@
-<a href="{{ path(base_route ~ '_show', {'id': id}) }}" class="btn btn-outline-primary btn-sm" title="Aperçu">
+<a href="{{ path(route, params|default({})) }}"
+   class="btn btn-outline-primary btn-sm"
+   title="Aperçu">
 	<i class="bi bi-eye"></i>
 </a>

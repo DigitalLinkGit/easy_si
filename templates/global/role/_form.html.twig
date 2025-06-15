@@ -1,7 +1,21 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <div class="d-flex justify-content-end gap-2 mt-4">
-        <a href="{{ path('app_role_index') }}" class="btn btn-outline-primary">Retour</a>
-        <button type="submit" class="btn btn-primary">Enregistrer</button>
-    </div>
+{{ form_widget(form) }}
+
+{% include 'global/components/button/_btn_bar.html.twig' with {
+    buttons: {
+        back: {
+            type: 'link',
+            route: 'app_role_index',
+            icon: 'bi-arrow-left',
+            label: 'Retour',
+            class: 'btn btn-outline-primary btn-sm'
+        },
+        save: {
+            type: 'submit',
+            icon: 'bi-check',
+            label: 'Enregistrer',
+            class: 'btn btn-primary btn-sm'
+        }
+    }
+} %}
 {{ form_end(form) }}

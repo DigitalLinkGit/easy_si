@@ -18,18 +18,20 @@ class Category
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    /**
-     * @var Collection<int, Question>
-     */
-    #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'category')]
-    private Collection $questions;
-
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $description = null;
 
+    #[ORM\OneToMany(mappedBy: 'category', targetEntity: CaptureElement::class)]
+    private Collection $elements;
+
     public function __construct()
     {
-        $this->questions = new ArrayCollection();
+        $this->elements = new ArrayCollection();
+    }
+
+    public function getElements(): Collection
+    {
+        return $this->elements;
     }
 
     public function getId(): ?int
@@ -45,36 +47,6 @@ class Category
     public function setName(string $name): static
     {
         $this->name = $name;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Question>
-     */
-    public function getQuestions(): Collection
-    {
-        return $this->questions;
-    }
-
-    public function addQuestion(Question $question): static
-    {
-        if (!$this->questions->contains($question)) {
-            $this->questions->add($question);
-            $question->setCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeQuestion(Question $question): static
-    {
-        if ($this->questions->removeElement($question)) {
-            // set the owning side to null (unless already changed)
-            if ($question->getCategory() === $this) {
-                $question->setCategory(null);
-            }
-        }
 
         return $this;
     }

@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Projet
+{% endblock %}
+
+{% block body %}
+	{% include 'global/partials/_page_header.html.twig' with {
+    title: 'Projet :'
+    } %}
+
+	{% include 'global/components/table/_table_show.html.twig' with { form: form } %}
+{% endblock %}

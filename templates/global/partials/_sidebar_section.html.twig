@@ -1,23 +1,16 @@
-{# 
-  Paramètres requis :
-  - icon : string (ex: '📸')
-  - title : string (ex: 'Capture')
-  - groups : array de blocs { label: string, links: [ { label, route } ] }
-#}
+<div class="navbar-section p-2 mb-1">
+	<div class="sidebar-section-title mb-2">
+		<span class="icon">{{ icon }}</span>
+		{{ title }}
+	</div>
 
-<div class="navbar-section">
-  <div class="section-title">
-    <span class="icon">{{ icon }}</span> {{ title }}
-  </div>
-
-  {% for group in groups %}
-    <div class="subsection-title">{{ group.label }}</div>
-    <ul class="nav flex-column">
-      {% for link in group.links %}
-        <li>
-          <a class="nav-link" href="{{ path(link.route) }}">{{ link.label }}</a>
-        </li>
-      {% endfor %}
-    </ul>
-  {% endfor %}
+	<ul class="nav flex-column">
+		{% for group in groups %}
+			{% for link in group.links %}
+				<li>
+					<a class="nav-link" href="{{ path(link.route) }}">{{ link.label }}</a>
+				</li>
+			{% endfor %}
+		{% endfor %}
+	</ul>
 </div>

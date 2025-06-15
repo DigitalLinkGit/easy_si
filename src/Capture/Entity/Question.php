@@ -5,6 +5,7 @@ namespace App\Capture\Entity;
 use App\Capture\Repository\QuestionRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use App\Capture\Enum\AnswerType;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: QuestionRepository::class)]
@@ -21,8 +22,12 @@ class Question
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 
-    #[ORM\Column]
-    private ?bool $multipleChoice = null;
+    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\JoinColumn(onDelete: 'CASCADE')]
+    private ?QuizCapture $quiz = null;
+
+    #[ORM\Column(type: 'string', enumType: AnswerType::class)]
+    private AnswerType $type = AnswerType::TEXT;
 
     /**
      * @var Collection<int, Proposal>
@@ -30,20 +35,11 @@ class Question
     #[ORM\OneToMany(mappedBy: 'question', targetEntity: Proposal::class, cascade: ['persist', 'remove'], orphanRemoval: true, fetch: 'EAGER')]
     private Collection $proposals;
 
-    #[ORM\ManyToOne(inversedBy: 'questions')]
-    private ?Category $category = null;
 
-    #[ORM\OneToMany(mappedBy: 'question', targetEntity: QuestionInstance::class)]
-    private Collection $instances;
 
-    public function getInstances(): Collection
-    {
-        return $this->instances;
-    }
     public function __construct()
     {
         $this->proposals = new ArrayCollection();
-        $this->instances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -74,19 +70,6 @@ class Question
 
         return $this;
     }
-
-    public function isMultipleChoice(): ?bool
-    {
-        return $this->multipleChoice;
-    }
-
-    public function setMultipleChoice(bool $multipleChoice): static
-    {
-        $this->multipleChoice = $multipleChoice;
-
-        return $this;
-    }
-
     /**
      * @return Collection<int, Proposal>
      */
@@ -117,49 +100,37 @@ class Question
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getType(): AnswerType
     {
-        return $this->category;
+        return $this->type;
     }
 
-    public function setCategory(?Category $category): static
+    public function setType(AnswerType $type): self
     {
-        $this->category = $category;
-
+        $this->type = $type;
         return $this;
     }
-    public function getAnswerType()
+
+    public function getQuiz(): ?QuizCapture
     {
-        if ($this->getProposals()->count() == 0) {
-            return 'Ouverte';
-        } else {
-            if ($this->multipleChoice) {
-                return 'Choix multiple';
-            } else {
-                return 'Choix unique';
-            }
-        }
+        return $this->quiz;
     }
 
-    public function addInstance(QuestionInstance $instance): static
+    public function setQuiz(?QuizCapture $quiz): static
     {
-        if (!$this->instances->contains($instance)) {
-            $this->instances->add($instance);
-            $instance->setQuestion($this);
-        }
+        $this->quiz = $quiz;
 
         return $this;
     }
 
-    public function removeInstance(QuestionInstance $instance): static
+    public function getProposalsAsArray(): array
     {
-        if ($this->instances->removeElement($instance)) {
-            // set the owning side to null (unless already changed)
-            if ($instance->getQuestion() === $this) {
-                $instance->setQuestion(null);
-            }
+        $choices = [];
+
+        foreach ($this->getProposals() as $proposal) {
+            $choices[$proposal->getContent()] = $proposal->getId();
         }
 
-        return $this;
+        return $choices;
     }
 }

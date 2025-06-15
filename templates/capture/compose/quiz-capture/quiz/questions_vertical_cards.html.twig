@@ -1,85 +1,76 @@
 {% if instances is not defined %}
-	<a href="{{ path('app_quiz_add_question', { quizId: quiz.id }) }}" class="btn btn-primary">
-		<i class="bi bi-plus-circle"></i>
-		Ajouter une première question
-	</a>
+  <a href="{{ path('app_quiz_add_question', { quizId: quiz.id }) }}" class="btn btn-primary">
+    <i class="bi bi-plus-circle"></i>
+    Ajouter une première question
+  </a>
 {% else %}
-	{% import _self as macros %}
+  {% import _self as macros %}
   <div>
-	{% for instance in instances %}
-		{{ macros.render_instance(instance) }}
-	{% endfor %}
+    {% for instance in instances %}
+      {{ macros.render_instance(instance) }}
+    {% endfor %}
   </div>
 {% endif %}
 
-
 {% macro render_instance(instance) %}
-	{% set collapseId = 'collapse_' ~ instance.id %}
+  {% set collapseId = 'collapse_' ~ instance.id %}
 
-	<div class="card mb-4 border border-primary-subtle shadow-sm">
-		<div class="card-header bg-light fw-bold d-flex justify-content-between align-items-center">
-			<span>({{ instance.id }})
-				{{ instance.question.name }}
-				:
-				{{ instance.question.content }}</span>
-			<button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#{{ collapseId }}" aria-expanded="false" aria-controls="{{ collapseId }}">
-				<i class="bi bi-chevron-expand"></i>
-			</button>
-		</div>
+  <div class="card mb-4 border border-primary-subtle shadow-sm">
+    <div class="card-header bg-light fw-bold d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-2">
+        <a href="{{ path('app_quiz_render_question', { instanceId: instance.id }) }}" class="btn btn-sm btn-outline-primary ms-2" title="Prévisualiser le rendu">
+          <i class="bi bi-eye"></i>
+        </a>
+        <span>({{ instance.id }}) : {{ instance.question.name }}</span>
+        
+      </div>
+      <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#{{ collapseId }}" aria-expanded="false" aria-controls="{{ collapseId }}">
+        <i class="bi bi-chevron-expand"></i>
+      </button>
+    </div>
 
-		<div id="{{ collapseId }}" class="collapse show">
-			<div
-				class="card-body">
-				{#<p class="mb-3">{{ instance.question.content }}</p>#}
+    <div id="{{ collapseId }}" class="collapse show">
+      <div class="card-body">
+        {{ instance.question.content }}
+        {% if instance.question.proposals|length > 0 %}
+          <ul class="list-group list-group-flush mb-3">
+            {% for proposal in instance.question.proposals %}
+              <li class="list-group-item">
+                <div class="mt-2">
+                  {{ proposal.id }} : {{ proposal.content }}
+                  {% set condition = instance.conditions|filter(c => c.proposalId == proposal.id)|first %}
+                  {% if condition and condition.nextQuestionInstance %}
+                    → {{ condition.nextQuestionInstance.question.name }}
+                    <span class="badge bg-info ms-2">condition</span>
+                  {% else %}
+                    {% if instance.nextQuestionInstance is null %}
+                      <a href="{{ path('app_quiz_add_question', { quizId: instance.quiz.id, previousInstanceId: instance.id, proposalId: proposal.id }) }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-plus-circle"></i>
+                        Ajouter suite
+                      </a>
+                    {% endif %}
+                  {% endif %}
+                </div>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">Aucune proposition.</p>
+        {% endif %}
 
-				{% if instance.question.proposals|length > 0 %}
-					<ul class="list-group list-group-flush mb-3">
-						{% for proposal in instance.question.proposals %}
-							<li class="list-group-item">
-								<div class="mt-2">
-									{{ proposal.id }}
-									:
-									{{ proposal.content }}
-									{% set condition = instance.conditions|filter(c => c.proposalId == proposal.id)|first %}
-									{% if condition and condition.nextQuestionInstance %}
-										→
-										{{ condition.nextQuestionInstance.question.name }}
-										<span class="badge bg-info ms-2">condition</span>
-										{#{{ _self.render_instance(condition.nextQuestionInstance) }}#}
-
-									{% else %}
-										{% if instance.nextQuestionInstance is null %}
-											<a href="{{ path('app_quiz_add_question', { quizId: instance.quiz.id, previousInstanceId: instance.id, proposalId: proposal.id }) }}" class="btn btn-sm btn-outline-success mt-2">
-												<i class="bi bi-plus-circle"></i>
-												Ajouter suite
-											</a>
-										{% else %}
-
-										{% endif %}
-
-									{% endif %}
-								</div>
-							</li>
-						{% endfor %}
-					</ul>
-				{% else %}
-					<p class="text-muted">Aucune proposition.</p>
-				{% endif %}
-				{% if instance.conditions|length == 0 %}
-
-
-					{% if instance.nextQuestionInstance is null %}
-						<a href="{{ path('app_quiz_add_question', { quizId: instance.quiz.id, previousInstanceId: instance.id }) }}" class="btn btn-sm btn-outline-primary mt-3">
-							<i class="bi bi-arrow-down-circle"></i>
-							Ajouter une question suivante
-						</a>
-					{% else %}
-						→
-						{{instance.nextQuestionInstance.question.name}}
-						<span class="badge bg-secondary ms-2">défaut</span>
-					{% endif %}
-				{% endif %}
-			</div>
-		</div>
-	</div>
+        {% if instance.conditions|length == 0 %}
+          {% if instance.nextQuestionInstance is null %}
+            <a href="{{ path('app_quiz_add_question', { quizId: instance.quiz.id, previousInstanceId: instance.id }) }}" class="btn btn-sm btn-outline-primary mt-3">
+              <i class="bi bi-arrow-down-circle"></i>
+              Ajouter une question suivante
+            </a>
+          {% else %}
+            → {{ instance.nextQuestionInstance.question.name }}
+            <span class="badge bg-secondary ms-2">défaut</span>
+          {% endif %}
+        {% endif %}
+        
+      </div>
+    </div>
+  </div>
 {% endmacro %}

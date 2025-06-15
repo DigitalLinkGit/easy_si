@@ -5,12 +5,15 @@ namespace App\Capture\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use App\Capture\Entity\QuizCapture;
+use App\Capture\Form\QuestionType;
 
-class QuizCaptureType extends AbstractType
+class QuizCaptureType extends CaptureElementType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        parent::buildForm($builder, $options);
 
     }
 

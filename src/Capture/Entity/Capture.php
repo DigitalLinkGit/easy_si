@@ -2,7 +2,8 @@
 
 namespace App\Capture\Entity;
 
-use App\Global\Entity\Role;
+use App\Global\Entity\ParticipantRole;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -25,8 +26,11 @@ class Capture
     #[ORM\JoinTable(name: 'capture_elements')]
     private Collection $elements;
 
-    #[ORM\ManyToMany(targetEntity: Role::class)]
+    #[ORM\ManyToMany(targetEntity: ParticipantRole::class)]
     private Collection $requiredRoles;
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $renderTitle = null;
 
     public function __construct()
     {
@@ -61,9 +65,6 @@ class Capture
         return $this;
     }
 
-    /**
-     * @return Collection<int, CaptureElement>
-     */
     public function getElements(): Collection
     {
         return $this->elements;
@@ -92,7 +93,7 @@ class Capture
         return $this;
     }
 
-    public function addRequiredRole(Role $role): static
+    public function addRequiredRole(ParticipantRole $role): static
     {
         if (!$this->requiredRoles->contains($role)) {
             $this->requiredRoles->add($role);
@@ -109,15 +110,40 @@ class Capture
             $respondentRole = $element->getRespondentRole();
             $validatorRole = $element->getValidatorRole();
 
-            if ($respondentRole instanceof \App\Global\Entity\Role) {
+            if ($respondentRole instanceof \App\Global\Entity\ParticipantRole) {
                 $roles[$respondentRole->getId()] = $respondentRole;
             }
 
-            if ($validatorRole instanceof \App\Global\Entity\Role) {
+            if ($validatorRole instanceof \App\Global\Entity\ParticipantRole) {
                 $roles[$validatorRole->getId()] = $validatorRole;
             }
         }
 
         return array_values($roles);
+    }
+
+    /**
+     * @return Collection<int, Role>
+     */
+    public function getRequiredRoles(): Collection
+    {
+        return $this->requiredRoles;
+    }
+
+    public function removeRequiredRole(ParticipantRole $requiredRole): static
+    {
+        $this->requiredRoles->removeElement($requiredRole);
+
+        return $this;
+    }
+    public function getRenderTitle(): ?string
+    {
+        return $this->renderTitle;
+    }
+
+    public function setRenderTitle(?string $renderTitle): self
+    {
+        $this->renderTitle = $renderTitle;
+        return $this;
     }
 }

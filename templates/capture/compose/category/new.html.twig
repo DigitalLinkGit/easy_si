@@ -1,9 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Category{% endblock %}
+{% block title %}Nouvelle catégorie{% endblock %}
 
 {% block body %}
-    <h2>Nouvelle catégorie</h2>
+    {% include 'global/partials/_page_header.html.twig' with {
+    route_return: 'app_category_index',
+    title: 'Catégorie :'
+    } %}
 
     {{ include('capture/compose/category/_form.html.twig') }}
 

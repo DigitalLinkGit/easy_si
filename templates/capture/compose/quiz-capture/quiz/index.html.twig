@@ -10,17 +10,28 @@
     title: 'Questionnaires :'
     } %}
 
-	{% include 'global/components/table/_table.html.twig' with {
+{% include 'global/components/table/_table.html.twig' with {
     items: quizzes,
     columns: ['name', 'description'],
     headers: ['Nom', 'Description'],
-    filter:true,
-    sort:true,
-    show:true,
-    edit:true,
-    delete:true,
-    add:true,
-    base_route: 'app_quiz'
-    } %}
+    filter: true,
+    sort: true,
+    actions: {
+        show: {
+            route: 'app_quiz_show',
+            param_map: { id: 'id' }
+        },
+        edit: {
+            route: 'app_quiz_edit',
+            param_map: { id: 'id' }
+        },
+        delete: {
+            route: 'app_quiz_delete',
+            param_map: { id: 'id' }
+        },
+        add: {route: 'app_quiz_new'}
+    }
+} %}
+
 </div>
 {% endblock %}

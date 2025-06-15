@@ -1,9 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Role{% endblock %}
+{% block title %}Modifier rôle{% endblock %}
 
 {% block body %}
-    <h2 class="section-title">Modifier le rôle</h2>
+	{% include 'global/partials/_page_header.html.twig' with {
+    title: 'Rôle :'
+    } %}
 
-    {{ include('role/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('global/role/_form.html.twig') }}
+
 {% endblock %}

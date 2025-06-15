@@ -4,12 +4,12 @@
 
 {% block body %}
 
-    {% include 'partials/_page_header.html.twig' with {
+    {% include 'global/partials/_page_header.html.twig' with {
     route_return: 'app_question_index',
     title: 'Créer une question'
     } %}
 
-    {% include 'question/_form.html.twig' with { form: form} %}
+    {% include 'capture/compose/quiz-capture/question/_form.html.twig' with { form: form} %}
 
 
 {% endblock %}

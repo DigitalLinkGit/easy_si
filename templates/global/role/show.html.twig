@@ -1,41 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Détail du rôle{% endblock %}
+{% block title %}Détail du rôle
+{% endblock %}
 
 {% block body %}
-<div class="container my-4">
+{% include 'global/partials/_page_header.html.twig' with {
+    route_return: 'app_role_index',
+    title: 'Rôle :'
+    } %}
 
-    <div class="section-title d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Rôle : {{ role.name }}</h2>
-        <a href="{{ path('app_role_index') }}" class="btn btn-outline-primary btn-sm">Retour</a>
-    </div>
-
-            {{ form_start(form) }}
-                <fieldset disabled>
-                    {{ form_row(form.name) }}
-                    {{ form_row(form.description) }}
-                </fieldset>
-            {{ form_end(form) }}
-
-    <h4 class="mb-3">Utilisé dans les sections</h4>
-
-    {% if role.sections is not empty %}
-        <ul class="list-group">
-            {% for section in role.sections %}
-                <li class="list-group-item d-flex justify-content-between align-items-start">
-                    <div>
-                        <strong>{{ section.name }}</strong><br>
-                        <small class="text-muted">{{ section.description }}</small>
-                    </div>
-                    <a href="{{ path('app_section_edit', {'id': section.id}) }}" class="btn btn-sm btn-outline-primary" title="Modifier la section">
-                        <i class="bi bi-pencil"></i>
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p class="text-muted">Aucune section n’utilise ce rôle.</p>
-    {% endif %}
-
-</div>
+	{% include 'global/components/table/_table_show.html.twig' with { form: form } %}
 {% endblock %}

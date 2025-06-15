@@ -1,10 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Category{% endblock %}
+{% block title %}Modifier catégorie{% endblock %}
 
 {% block body %}
-    <h2 class="section-title">Modifier catégorie</h2>
+    {% include 'global/partials/_page_header.html.twig' with {
+    route_return: 'app_category_index',
+    title: 'Catégorie :'
+    } %}
 
-    {{ include('capture/compose/category/_form.html.twig', {'button_label': 'Update'}) }}
+    {{ include('capture/compose/category/_form.html.twig') }}
 
 {% endblock %}

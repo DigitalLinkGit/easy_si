@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouveau projet{% endblock %}
+
+{% block body %}
+    {% include 'global/partials/_page_header.html.twig' with {
+    title: 'Projet :'
+    } %}
+
+    {{ include('global/project/_form.html.twig') }}
+{% endblock %}
