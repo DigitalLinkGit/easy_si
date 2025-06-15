@@ -1,62 +1,53 @@
-{# --------- Macro interne pour accéder aux attributs imbriqués --------- #}
-{% macro resolve_value(context, path) %}
-	{% set parts = path|split('.') %}
-	{% set value = context %}
-	{% set valid = true %}
-	{% for part in parts %}
-		{% if value is iterable and value[part] is defined %}
-			{% set value = value[part] %}
-		{% elseif attribute(value, part) is defined %}
-			{% set value = attribute(value, part) %}
-		{% else %}
-			{% set valid = false %}
-		{% endif %}
-	{% endfor %}
-	{{- valid ? value : null -}}
-{% endmacro %}
-
-{% import _self as utils %}
-
 <div class="d-flex justify-content-end gap-2 mt-4">
-	{% for key, btn in buttons %}
-		{% set type = btn.type|default('link') %}
-		{% set params = {} %}
-		{% set valid_params = [] %}
-		{% set expected_count = btn.param_map|default({})|length %}
+    {% for key, btn in buttons %}
+        {% set type = btn.type|default('link') %}
+        {% set params = {} %}
+        {% set expected = btn.param_map|default({}) %}
+        {% set allParamsValid = true %}
 
-		{# Résolution des paramètres dynamiques à partir du contexte #}
-		{% for param, path in btn.param_map|default({}) %}
-			{% set resolved = utils.resolve_value(_context, path) %}
-			{% set params = params|merge({ (param): resolved }) %}
-			{% if resolved is not empty %}
-				{% set valid_params = valid_params|merge([resolved]) %}
-			{% endif %}
-		{% endfor %}
+        {% if type == 'link' %}
+            {% for param, prop in expected %}
+                {% set parts = prop|split('.') %}
+                {% set value = _context[parts[0]] ?? null %}
 
-		{# Lien ou bouton désactivé #}
-		{% if type == 'link' %}
-			{% if valid_params|length == expected_count %}
-				<a href="{{ path(btn.route, params) }}" class="{{ btn.class|default('btn btn-primary') }} d-inline-flex align-items-center gap-1" title="{{ btn.title|default(btn.label) }}">
-					{% if btn.icon is defined %}
-						<i class="bi {{ btn.icon }}"></i>
-					{% endif %}
-					{{ btn.label }}
-				</a>
-			{% else %}
-				<button class="{{ btn.class|default('btn btn-secondary') }}" disabled>
-					{% if btn.icon is defined %}
-						<i class="bi {{ btn.icon }}"></i>
-					{% endif %}
-					{{ btn.label }}
-				</button>
-			{% endif %}
-		{% elseif type == 'submit' %}
-			<button type="submit" class="{{ btn.class|default('btn btn-primary') }}" title="{{ btn.title|default(btn.label) }}">
-				{% if btn.icon is defined %}
-					<i class="bi {{ btn.icon }} me-1"></i>
-				{% endif %}
-				{{ btn.label }}
-			</button>
-		{% endif %}
-	{% endfor %}
+                {% if value is not null %}
+                    {% for part in parts|slice(1) %}
+                        {% if value is not null and attribute(value, part) is defined %}
+                            {% set value = attribute(value, part) %}
+                        {% else %}
+                            {% set value = null %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+
+                {% if value is not null %}
+                    {% set params = params|merge({ (param): value }) %}
+                {% else %}
+                    {% set allParamsValid = false %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        {% if type != 'link' or allParamsValid %}
+            {% if type == 'link' %}
+                <a href="{{ path(btn.route, params) }}"
+                   class="{{ btn.class|default('btn btn-primary') }} d-inline-flex align-items-center gap-1"
+                   title="{{ btn.title|default(btn.label) }}">
+                    {% if btn.icon is defined %}
+                        <i class="bi {{ btn.icon }}"></i>
+                    {% endif %}
+                    {{ btn.label }}
+                </a>
+            {% elseif type == 'submit' %}
+                <button type="submit"
+                        class="{{ btn.class|default('btn btn-primary') }}"
+                        title="{{ btn.title|default(btn.label) }}">
+                    {% if btn.icon is defined %}
+                        <i class="bi {{ btn.icon }} me-1"></i>
+                    {% endif %}
+                    {{ btn.label }}
+                </button>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
 </div>

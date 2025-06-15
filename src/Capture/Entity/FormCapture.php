@@ -14,9 +14,9 @@ use Doctrine\ORM\Mapping as ORM;
 class FormCapture extends CaptureElement
 {
 
-    #[ORM\OneToMany(mappedBy: 'formCapture', targetEntity: FormField::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
-    #[ORM\OrderBy(['position' => 'ASC'])]
+    #[ORM\OneToMany(mappedBy: 'formCapture', targetEntity: FormField::class, cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private Collection $fields;
+
 
     public function __construct()
     {
@@ -83,5 +83,14 @@ class FormCapture extends CaptureElement
     public function getType(): CaptureElementTypeEnum
     {
         return CaptureElementTypeEnum::FORM;
+    }
+
+    public function getResponseData(): array
+    {
+        $data = [];
+        foreach ($this->getFields() as $field) {
+            $data[$field->getName()] = null;
+        }
+        return $data;
     }
 }

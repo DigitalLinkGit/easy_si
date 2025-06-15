@@ -10,6 +10,23 @@
 <div id="sidebarPanel" class="position-fixed top-0 start-0 bg-white border-end shadow"
      style="width: 250px; height: 100vh; transform: translateX(-100%); transition: transform 0.3s; z-index: 1040; padding-top: 60px;">
   <div class="p-2">
+    {# Section: Compose #}
+    {% include 'global/partials/_sidebar_section.html.twig' with {
+      icon: '',
+      title: 'Compose',
+      groups: [
+        {
+          links: [
+			      { label: 'Mes Captures', route: 'app_capture_index' },
+            { label: 'Mes Formulaires', route: 'app_form_capture_index' },
+            { label: 'Mes Questionnaires', route: 'app_quiz_index' },
+            { label: 'Mes Catégories', route: 'app_category_index' },
+            { label: 'Mes Rôles', route: 'app_role_index' }
+          ]
+        }
+      ]
+    } %}
+
     {# Section: Capture #}
     {% include 'global/partials/_sidebar_section.html.twig' with {
       icon: '',
@@ -17,10 +34,7 @@
       groups: [
         {
           links: [
-			      { label: 'Mes Captures', route: 'app_capture_index' },
-            { label: 'Mes Formulaires', route: 'app_form_capture_index' },
-            { label: 'Mes Questionnaires', route: 'app_quiz_index' },
-            { label: 'Mes Catégories', route: 'app_category_index' }
+			      { label: 'Mes Projets', route: 'app_project_index' },
           ]
         }
       ]

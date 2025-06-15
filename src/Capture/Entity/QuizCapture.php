@@ -15,7 +15,7 @@ class QuizCapture extends CaptureElement
     /**
      * @var Collection<int, Question>
      */
-    #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'quiz')]
+    #[ORM\OneToMany(mappedBy: 'quiz', targetEntity: Question::class, cascade: ['persist', 'remove'], fetch: 'EAGER')]
     private Collection $questions;
 
     public function __construct()
@@ -31,32 +31,6 @@ class QuizCapture extends CaptureElement
         return $this->questions;
     }
 
-    public function addQuestionsInstance(Question $questions): static
-    {
-        if (!$this->questions->contains($questions)) {
-            $this->questions->add($questions);
-            $questions->setQuiz($this);
-        }
-
-        return $this;
-    }
-    public function removeQuestionInstance(Question $question): self
-    {
-        $this->questions->removeElement($question);
-        return $this;
-    }
-
-    public function removeQuestionsInstance(Question $questions): static
-    {
-        if ($this->questions->removeElement($questions)) {
-            // set the owning side to null (unless already changed)
-            if ($questions->getQuiz() === $this) {
-                $questions->setQuiz(null);
-            }
-        }
-
-        return $this;
-    }
     public function getInterpolableVariables(): array
     {
         $questionVariables = array_map(
@@ -102,5 +76,14 @@ class QuizCapture extends CaptureElement
     public function getType(): CaptureElementTypeEnum
     {
         return CaptureElementTypeEnum::QUIZ;
+    }
+
+    public function getResponseData(): array
+    {
+        $data = [];
+        foreach ($this->getQuestions() as $question) {
+            $data[$question->getName()] = null;
+        }
+        return $data;
     }
 }

@@ -65,9 +65,6 @@ class Capture
         return $this;
     }
 
-    /**
-     * @return Collection<int, CaptureElement>
-     */
     public function getElements(): Collection
     {
         return $this->elements;

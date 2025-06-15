@@ -3,6 +3,7 @@
 namespace App\Capture\Controller;
 
 use App\Capture\Entity\Question;
+use App\Capture\Entity\QuizCapture;
 use App\Capture\Form\QuestionType;
 use App\Capture\Repository\QuestionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,9 +26,24 @@ final class QuestionController extends AbstractController
     }
 
     #[Route('/new', name: 'app_question_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $em, LoggerInterface $logger,int $quizId): Response
+    public function new(Request $request, EntityManagerInterface $em, LoggerInterface $logger): Response
     {
+        $quizId = $request->query->getInt('quizId');
+
+        if (!$quizId) {
+            throw $this->createNotFoundException('Paramètre "quizId" requis.');
+        }
+
+        // Optionnel : charger l'objet Quiz pour l'attacher à la Question
+        /** @var QuizCapture|null $quiz */
+        $quiz = $em->getRepository(QuizCapture::class)->find($quizId);
+        if (!$quiz) {
+            throw $this->createNotFoundException("Quiz #$quizId introuvable.");
+        }
+
         $question = new Question();
+        $question->setQuiz($quiz); // ← on rattache directement
+
         $form = $this->createForm(QuestionType::class, $question);
         $form->handleRequest($request);
 
@@ -42,7 +58,7 @@ final class QuestionController extends AbstractController
                     $em->flush();
 
                     $this->addFlash('success', 'Question créée avec succès.');
-                    return $this->redirectToRoute('app_quiz_edit',['id'=>$quizId]);
+                    return $this->redirectToRoute('app_quiz_edit', ['id' => $quizId]);
                 } catch (\Throwable $e) {
                     $logger->error('Erreur lors de la création de la question : ' . $e->getMessage(), ['exception' => $e]);
                     $this->addFlash('danger', 'Une erreur est survenue lors de l’enregistrement.');
@@ -56,6 +72,7 @@ final class QuestionController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
+
 
     #[Route('/{id}', name: 'app_question_show', methods: ['GET'])]
     public function show(Question $question): Response
@@ -89,6 +106,7 @@ final class QuestionController extends AbstractController
         return $this->render('capture/compose/quiz-capture/question/edit.html.twig', [
             'question' => $question,
             'form' => $form->createView(),
+            'quizId' => $question->getQuiz()->getId(),
         ]);
     }
 

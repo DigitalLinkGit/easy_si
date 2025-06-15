@@ -1,33 +1,35 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Rôles{% endblock %}
+{% block title %}Projets
+{% endblock %}
 
 {% block body %}
 	{% include 'global/partials/_page_header.html.twig' with {
-    title: 'Rôles :'
+    title: 'Projets :'
     } %}
 
-	
+
 	{% include 'global/components/table/_table.html.twig' with {
-    items: roles,
-    columns: ['name', 'description'],
-    headers: ['Nom', 'Description'],
+    items: projects,
+    columns: ['name', 'description','status'],
+    headers: ['Nom', 'Description','Statut'],
     filter: true,
     sort: true,
     actions: {
         show:  {
-            route: 'app_role_show',
+            route: 'app_project_show',
             param_map: { id: 'id' }
         },
         edit:  {
-            route: 'app_role_edit',
+            route: 'app_project_edit',
             param_map: { id: 'id' }
         },
         delete: {
-            route: 'app_role_delete',
+            route: 'app_project_delete',
             param_map: { id: 'id' }
         },
-        add: {route: 'app_role_new'}
+        add: {route: 'app_project_new'}
     }
 } %}
+
 {% endblock %}

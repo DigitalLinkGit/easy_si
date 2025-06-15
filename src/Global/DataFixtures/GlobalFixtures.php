@@ -3,10 +3,11 @@
 namespace App\Global\DataFixtures;
 
 use App\Global\Entity\ParticipantRole;
+use App\Global\Entity\Project;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 
-class RoleFixtures extends Fixture
+class GlobalFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {

@@ -2,10 +2,36 @@
 
 {{ include('capture/compose/capture-element/_form_header.html.twig') }}
 
+{% include 'global/components/button/_btn_bar.html.twig' with {
+    buttons: {
+        render_edit: {
+            type: 'link',
+            route: 'capture_element_edit_render',
+            param_map: { id: 'quiz.id' },
+            icon: 'bi-pencil',
+            label: 'Éditer le rendu',
+            class: 'btn btn-outline-primary btn-sm'
+        },
+        back: {
+            type: 'link',
+            route: 'app_quiz_index',
+            icon: 'bi-arrow-left',
+            label: 'Retour',
+            class: 'btn btn-outline-primary btn-sm'
+        },
+        save: {
+            type: 'submit',
+            icon: 'bi-check',
+            label: 'Enregistrer',
+            class: 'btn btn-primary btn-sm'
+        }
+    }
+} %}
 
 <h5>Questions :</h5>
-{% if quiz.id is defined and quiz.id is not null %}
-    {% include 'global/components/table/_table.html.twig' with {
+{% if quiz is defined and quiz.id is not null %}
+
+   {% include 'global/components/table/_table.html.twig' with {
     items: questions,
     columns: ['name', 'content', 'type'],
     headers: ['Nom', 'Intitulé', 'Type'],
@@ -26,41 +52,17 @@
         },
         add: {
             route: 'app_question_new',
-            params: { quizId: 'quiz.id' }
+            params: { quizId: quiz.id }
         }
     }
-} %}    
+} %} 
 {% else %}
 Enregistrez le questionnaire pour commencer à ajouter des questions
 {% endif %}
 
 
 
-{% include 'global/components/button/_btn_bar.html.twig' with {
-    buttons: {
-        render_edit: {
-            type: 'link',
-            route: 'capture_element_edit_render',
-            param_map: { id: 'form_capture.id' },
-            icon: 'bi-pencil',
-            label: 'Éditer le rendu',
-            class: 'btn btn-outline-primary btn-sm'
-        },
-        back: {
-            type: 'link',
-            route: 'app_quiz_index',
-            icon: 'bi-arrow-left',
-            label: 'Retour',
-            class: 'btn btn-outline-primary btn-sm'
-        },
-        save: {
-            type: 'submit',
-            icon: 'bi-check',
-            label: 'Enregistrer',
-            class: 'btn btn-primary btn-sm'
-        }
-    }
-} %}
+
 
 {{ form_end(form) }}
 

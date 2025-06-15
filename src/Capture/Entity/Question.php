@@ -35,7 +35,7 @@ class Question
     #[ORM\OneToMany(mappedBy: 'question', targetEntity: Proposal::class, cascade: ['persist', 'remove'], orphanRemoval: true, fetch: 'EAGER')]
     private Collection $proposals;
 
-    
+
 
     public function __construct()
     {
@@ -121,5 +121,16 @@ class Question
         $this->quiz = $quiz;
 
         return $this;
+    }
+
+    public function getProposalsAsArray(): array
+    {
+        $choices = [];
+
+        foreach ($this->getProposals() as $proposal) {
+            $choices[$proposal->getContent()] = $proposal->getId();
+        }
+
+        return $choices;
     }
 }

@@ -15,7 +15,7 @@ class CaptureType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'label' => 'Nom de la catégorie',
+                'label' => 'Nom de la capture',
                 'attr' => [
                     'class' => 'form-control',
                     'placeholder' => 'Nom de la capture...',

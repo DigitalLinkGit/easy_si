@@ -58,8 +58,10 @@ final class CaptureController extends AbstractController
     #[Route('/{id}', name: 'app_capture_show', methods: ['GET'])]
     public function show(Capture $capture): Response
     {
+        $form = $this->createForm(CaptureType::class, $capture, ['disabled' => true]);
         return $this->render('capture/compose/capture/show.html.twig', [
             'capture' => $capture,
+            'form' => $form,
         ]);
     }
 

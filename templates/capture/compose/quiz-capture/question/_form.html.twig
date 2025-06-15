@@ -1,6 +1,6 @@
 {% set disabled = disabled ?? false %}
 {{ form_start(form, { attr: { class: 'needs-validation' } }) }}
-<fieldset {{ disabled ? 'disabled' }}>
+<div>
 
 	<div class="d-flex gap-4">
 			{{ form_row(form.name) }}
@@ -58,9 +58,6 @@
 
 </fieldset>
 
-  {% if not disabled %}
-    {{ include('global/components/button/_btn_save.html.twig') }}
-  {% endif %}
 {{ form_end(form) }}
 
 <script>

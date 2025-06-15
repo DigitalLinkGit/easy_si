@@ -36,7 +36,7 @@ abstract class CaptureElement
     #[ORM\ManyToOne]
     protected ?ParticipantRole $validatorRole = null;
 
-    #[ORM\ManyToOne(inversedBy: 'questions')]
+    #[ORM\ManyToOne(inversedBy: 'elements')]
     private ?Category $category = null;
 
     #[ORM\Column(type: 'text', nullable: true)]

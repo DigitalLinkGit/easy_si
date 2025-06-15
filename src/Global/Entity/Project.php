@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Project
 {
     #[ORM\Id]
@@ -34,10 +35,24 @@ class Project
     #[ORM\OneToMany(mappedBy: 'project', targetEntity: CaptureInstance::class)]
     private Collection $captureInstances;
 
+    #[ORM\OneToMany(mappedBy: 'project', targetEntity: ParticipantAssignment::class, cascade: ['persist'], orphanRemoval: true)]
+    private Collection $participantAssignments;
+
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable();
+        $this->updatedAt = new \DateTime();
+        $this->participantAssignments = new ArrayCollection();
         $this->captureInstances = new ArrayCollection();
     }
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        $this->updatedAt = new \DateTime();
+    }
+
+
 
     public function getId(): ?int
     {
@@ -104,9 +119,6 @@ class Project
         return $this;
     }
 
-    /**
-     * @return Collection<int, CaptureInstance>
-     */
     public function getCaptureInstances(): Collection
     {
         return $this->captureInstances;
@@ -132,5 +144,60 @@ class Project
         }
 
         return $this;
+    }
+
+    public function getAllRolesFromCaptures(): array
+    {
+        $roles = [];
+
+        foreach ($this->getCaptureInstances() as $instance) {
+            $capture = $instance->getCapture();
+            foreach ($capture->getAllRolesFromElements() as $role) {
+                $roles[$role->getId()] = $role;
+            }
+        }
+
+        return array_values($roles);
+    }
+
+    public function getParticipantAssignments(): Collection
+    {
+        return $this->participantAssignments;
+    }
+
+    public function addParticipantAssignment(ParticipantAssignment $assignment): self
+    {
+        if (!$this->participantAssignments->contains($assignment)) {
+            $this->participantAssignments[] = $assignment;
+            $assignment->setProject($this);
+        }
+
+        return $this;
+    }
+
+    public function removeParticipantAssignment(ParticipantAssignment $assignment): self
+    {
+        if ($this->participantAssignments->removeElement($assignment)) {
+            if ($assignment->getProject() === $this) {
+                $assignment->setProject(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getAllCaptureElementsByCaptureInstance(): array
+    {
+        $result = [];
+
+        foreach ($this->getCaptureInstances() as $instance) {
+            $capture = $instance->getCapture();
+            $result[] = [
+                'instance' => $instance,
+                'elements' => $capture->getElements(),
+            ];
+        }
+
+        return $result;
     }
 }

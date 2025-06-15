@@ -35,13 +35,6 @@ class ParticipantRoleType extends AbstractType
             ->add('isInternal', CheckboxType::class, [
                 'label' => 'Rôle interne (utilisateur de l\'application)',
                 'required' => false,
-            ])
-            ->add('save', SubmitType::class, [
-                'label' => 'Enregistrer',
-                'row_attr' => ['class' => 'text-end'],
-                'attr' => [
-                    'class' => 'btn btn-primary mt-2'
-                ],
             ]);
     }
 

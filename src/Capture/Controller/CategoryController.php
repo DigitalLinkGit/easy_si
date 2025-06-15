@@ -46,7 +46,7 @@ final class CategoryController extends AbstractController
     public function show(Category $category): Response
     {
         $form = $this->createForm(CategoryType::class, $category, [
-            'disabled' => true, // formulaire en lecture seule
+            'disabled' => true,
         ]);
 
         return $this->render('capture/compose/category/show.html.twig', [

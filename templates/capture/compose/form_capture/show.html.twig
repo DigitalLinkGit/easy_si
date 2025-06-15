@@ -1,36 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}FormCapture{% endblock %}
+{% block title %}Formulaire de capture{% endblock %}
 
 {% block body %}
-    <h1>FormCapture</h1>
+    {% include 'global/partials/_page_header.html.twig' with {
+    route_return: 'app_form_capture_index',
+    title: 'Formulaire de capture :'
+    } %}
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ form_capture.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ form_capture.name }}</td>
-            </tr>
-            <tr>
-                <th>Description</th>
-                <td>{{ form_capture.description }}</td>
-            </tr>           
-            <tr>
-                <th>Titre du document</th>
-                <td>{{ form_capture.renderTitle }}</td>
-            </tr>
-            <tr>
-                <th>Niveau de titre</th>
-                <td>{{ form_capture.renderTitleLevel }}</td>
-            </tr>
-            <tr>
-                <th>Texte</th>
-                <td>{{ form_capture.renderTemplate }}</td>
-            </tr>
-        </tbody>
-    </table>
+	{% include 'global/components/table/_table_show.html.twig' with { form: form } %}
 {% endblock %}

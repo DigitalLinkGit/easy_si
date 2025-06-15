@@ -1,7 +1,9 @@
 <?php
+
 namespace App\Capture\Controller;
 
 use App\Capture\Entity\FormCapture;
+use App\Capture\Enum\AnswerType;
 use App\Capture\Form\FormCaptureType;
 use App\Capture\Repository\FormCaptureRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,9 +36,15 @@ class FormCaptureController extends AbstractController
             return $this->redirectToRoute('app_form_capture_index');
         }
 
+        $fieldTypes = array_map(fn($type) => [
+            'value' => $type->value,
+            'label' => $type->label(),
+        ], AnswerType::cases());
+
         return $this->render('capture/compose/form_capture/new.html.twig', [
             'form_capture' => $formCapture,
             'form' => $form->createView(),
+            'fieldTypes' => $fieldTypes,
         ]);
     }
 
@@ -51,16 +59,22 @@ class FormCaptureController extends AbstractController
             return $this->redirectToRoute('app_form_capture_index');
         }
 
+        $fieldTypes = array_map(fn($type) => [
+            'value' => $type->value,
+            'label' => $type->label(),
+        ], AnswerType::cases());
+
         return $this->render('capture/compose/form_capture/edit.html.twig', [
             'form_capture' => $formCapture,
             'form' => $form->createView(),
+            'fieldTypes' => $fieldTypes,
         ]);
     }
 
     #[Route('/{id}', name: 'app_form_capture_delete', methods: ['POST'])]
     public function delete(FormCapture $formCapture, Request $request, EntityManagerInterface $em): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$formCapture->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $formCapture->getId(), $request->request->get('_token'))) {
             $em->remove($formCapture);
             $em->flush();
         }

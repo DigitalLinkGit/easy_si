@@ -2,7 +2,8 @@
 
 namespace App\Capture\Entity;
 
-use App\Capture\Entity\ParticipantAssignment;
+use App\Global\Entity\ParticipantAssignment;
+use App\Global\Entity\Project;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,17 +19,12 @@ class CaptureInstance
     #[ORM\ManyToOne]
     private ?Capture $capture = null;
 
-    #[ORM\OneToMany(mappedBy: 'captureInstance', targetEntity: CaptureElementInstance::class)]
-    private Collection $captureElementInstance;
-
-    #[ORM\OneToMany(mappedBy: 'captureInstance', targetEntity: ParticipantAssignment::class)]
-    private Collection $participantAssignments;
+    #[ORM\ManyToOne(targetEntity: Project::class, inversedBy: 'captureInstances')]
+    private ?Project $project = null;
 
 
     public function __construct()
     {
-        $this->captureElementInstance = new ArrayCollection();
-        $this->participantAssignments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -47,92 +43,15 @@ class CaptureInstance
         return $this;
     }
 
-    /**
-     * @return Collection<int, CaptureElementInstance>
-     */
-    public function getElementInstances(): Collection
+    public function getProject(): ?Project
     {
-        return $this->captureElementInstance;
+        return $this->project;
     }
 
-
-    public function addElementInstance(CaptureElementInstance $captureElementInst): static
+    public function setProject(?Project $project): self
     {
-        if (!$this->captureElementInstance->contains($captureElementInst)) {
-            $this->captureElementInstance->add($captureElementInst);
-            $captureElementInst->setCaptureInstance($this);
-        }
+        $this->project = $project;
 
         return $this;
-    }
-
-    public function removeElementInstance(CaptureElementInstance $captureElementInst): static
-    {
-        if ($this->captureElementInstance->removeElement($captureElementInst)) {
-            if ($captureElementInst->getCaptureInstance() === $this) {
-                $captureElementInst->setCaptureInstance(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, ParticipantAssignment>
-     */
-    public function getParticipantAssignments(): Collection
-    {
-        return $this->participantAssignments;
-    }
-
-    public function addParticipantAssignment(ParticipantAssignment $assignment): static
-    {
-        if (!$this->participantAssignments->contains($assignment)) {
-            $this->participantAssignments->add($assignment);
-            $assignment->setCaptureInstance($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParticipantAssignment(ParticipantAssignment $assignment): static
-    {
-        if ($this->participantAssignments->removeElement($assignment)) {
-            if ($assignment->getCaptureInstance() === $this) {
-                $assignment->setCaptureInstance(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function addCaptureElementInstance(CaptureElementInstance $captureElementInst): static
-    {
-        if (!$this->captureElementInstance->contains($captureElementInst)) {
-            $this->captureElementInstance->add($captureElementInst);
-            $captureElementInst->setCaptureInstance($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCaptureElementInstance(CaptureElementInstance $captureElementInst): static
-    {
-        if ($this->captureElementInstance->removeElement($captureElementInst)) {
-            // set the owning side to null (unless already changed)
-            if ($captureElementInst->getCaptureInstance() === $this) {
-                $captureElementInst->setCaptureInstance(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, CaptureElementInstance>
-     */
-    public function getCaptureElementInstance(): Collection
-    {
-        return $this->captureElementInstance;
     }
 }

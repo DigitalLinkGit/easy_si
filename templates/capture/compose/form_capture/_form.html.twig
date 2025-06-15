@@ -1,50 +1,6 @@
-{% set fieldTypes = {
-    'text': 'Texte court',
-    'textarea': 'Texte long',
-    'email': 'Email',
-    'number': 'Nombre',
-    'date': 'Date',
-	'select': 'Liste',
-} %}
-
 {{ form_start(form) }}
 
 {{ include('capture/compose/capture-element/_form_header.html.twig') }}
-
-<h5>Éditeur de formulaire</h5>
-<div
-	id="builder-container">
-
-	<!-- Éditeur -->
-	<div id="form-editor">
-
-		<div id="formFields-wrapper" data-prototype="{{ form_widget(form.fields.vars.prototype)|e('html_attr') }}">
-			{% for fieldForm in form.fields %}
-				<div class="form-field-entry d-flex align-items-center gap-2">
-					{{ form_widget(fieldForm.children.label) }}
-					{{ form_widget(fieldForm.children.name) }}
-					<span class="badge bg-secondary me-2">
-						{{ fieldTypes[fieldForm.children.type.vars.value] ?? fieldForm.children.type.vars.value }}
-					</span>
-					<button type="button" class="btn btn-sm btn-outline-danger remove-field ms-2" title="Supprimer">×</button>
-					{{ form_widget(fieldForm.children.type) }}
-					{{ form_widget(fieldForm.children.position) }}
-				</div>
-			{% endfor %}
-		</div>
-	</div>
-
-	<!-- Palette -->
-	<div id="field-palette">
-		<h5>Champs disponibles</h5>
-		{% for key, label in fieldTypes %}
-			<div class="draggable-element mb-2" draggable="true" data-type="{{ key }}">
-				{{ label }}
-			</div>
-		{% endfor %}
-	</div>
-
-</div>
 
 {% include 'global/components/button/_btn_bar.html.twig' with {
     buttons: {
@@ -72,6 +28,44 @@
     }
 } %}
 
+<h5>Éditeur de formulaire</h5>
+<div
+	id="builder-container">
+
+	<!-- Éditeur -->
+	<div id="form-editor">
+
+		<div id="formFields-wrapper" data-prototype="{{ form_widget(form.fields.vars.prototype)|e('html_attr') }}">
+			{% for fieldForm in form.fields %}
+				<div class="form-field-entry d-flex align-items-center gap-2">
+					{{ form_widget(fieldForm.children.label) }}
+					{{ form_widget(fieldForm.children.name) }}
+					<span class="badge bg-secondary me-2">
+						{{ fieldTypes[fieldForm.children.type.vars.value] ?? fieldForm.children.type.vars.value }}
+					</span>
+					<button type="button" class="btn btn-sm btn-outline-danger remove-field ms-2" title="Supprimer">×</button>
+					{{ form_widget(fieldForm.children.type) }}
+					{{ form_widget(fieldForm.children.position) }}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+
+	<!-- Palette -->
+	<div id="field-palette">
+		<h5>Champs disponibles</h5>
+		{% for type in fieldTypes %}
+			<div class="draggable-element mb-2" draggable="true" data-type="{{ type.value }}">
+				{{ type.label }}
+			</div>
+		{% endfor %}
+
+	</div>
+
+</div>
+
+
+
 {{ form_end(form) }}
 
 
@@ -79,17 +73,15 @@
 	document.addEventListener('DOMContentLoaded', () => {
 const wrapper = document.getElementById('formFields-wrapper');
 const editor = document.getElementById('form-editor');
-// const palette = document.querySelectorAll('.draggable-field');
 const palette = document.querySelectorAll('.draggable-element');
 
-
 const typeLabels = {
-text: 'Texte court',
-textarea: 'Texte long',
-select: 'Liste',
-email: 'Email',
+textarea: 'Texte libre',
 number: 'Nombre',
-date: 'Date'
+date: 'Date',
+boolean: 'Oui/Non',
+single_choice: 'Choix unique',
+multi_choice: 'Choix multiple'
 };
 
 let index = wrapper.querySelectorAll('.form-field-entry').length;
@@ -145,6 +137,7 @@ if (labelInput)
 wrapperEntry.appendChild(labelInput);
 
 
+
 if (nameInput) 
 wrapperEntry.appendChild(nameInput);
 
@@ -166,6 +159,7 @@ if (typeInput)
 wrapperEntry.appendChild(typeInput);
 
 
+
 if (posInput) 
 wrapperEntry.appendChild(posInput);
 
@@ -174,8 +168,6 @@ wrapperEntry.appendChild(posInput);
 wrapper.appendChild(wrapperEntry);
 }
 
-
-// Suppression pour les champs existants déjà rendus
 document.querySelectorAll('.remove-field').forEach(btn => {
 btn.addEventListener('click', () => {
 btn.closest('.form-field-entry').remove();

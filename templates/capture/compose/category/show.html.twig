@@ -9,13 +9,5 @@
     title: 'Catégorie :'
     } %}
 
-	<div class="card mb-4">
-		<div class="card-body">
-			{{ form_start(form) }}
-			<fieldset disabled>
-				{{ form_row(form.name) }}
-			</fieldset>
-			{{ form_end(form) }}
-		</div>
-	</div>
+	{% include 'global/components/table/_table_show.html.twig' with { form: form } %}
 {% endblock %}
